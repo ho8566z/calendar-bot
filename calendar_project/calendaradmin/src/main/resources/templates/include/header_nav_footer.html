@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<header th:fragment="header">
+    <div id="top">
+        <h3>MY CALENDAR ADMIN</h3>
+    </div>
+    <div id="header_wrap">
+        <a th:href="@{/}">home</a> &nbsp;&nbsp;
+
+        <th:block sec:authorize="!hasAnyRole('ADMIN', 'SUPER_ADMIN')">
+            <a th:href="@{/member/signup}">sign-up</a> &nbsp;&nbsp;
+            <a th:href="@{/member/signin}">sign-in</a>
+        </th:block>
+
+        <th:block sec:authorize="hasAnyRole('ADMIN', 'SUPER_ADMIN')">
+            <a th:href="@{/member/signout_confirm}">signout</a>
+        </th:block>
+
+    </div>
+</header>
+
+<nav th:fragment="nav">
+    <div id="nav_wrap">
+        <th:block sec:authorize="hasAnyRole('SUPER_ADMIN')">
+            <a th:href="@{/admin/list}">admin-list</a>
+        </th:block>
+        <a th:href="@{/user/list}">user-list</a>
+    </div>
+</nav>
+
+<footer th:fragment="footer">
+    <div id="footer_wrap">
+        Copyright OFFICE Corp. ALL Rights Reserved.
+    </div>
+</footer>
+
+</html>

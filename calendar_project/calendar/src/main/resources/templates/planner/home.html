@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="~{include/title::title}"/>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/header_nav_footer.css}">
+    <link rel="stylesheet" th:href="@{/css/planner.css}">
+
+    <script src="/js/planner_fetch.js"></script>
+    <script src="/js/planner.js"></script>
+
+</head>
+<body>
+
+<header th:replace="~{include/header_nav_footer::header}" />
+
+<nav th:replace="~{include/header_nav_footer::nav}"/>
+
+<section>
+    <div id="section_wrap">
+        <div class="word">
+            PLANNER
+        </div>
+
+        <div class="content">
+
+            <!-- 년, 월 선택 select -->
+            <div class="select_wrap">
+                <a class="btn_pre" href="#none"> &nbsp;&nbsp; &#60; &nbsp;&nbsp; </a>
+
+                <select name="p_year">
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                    <option value="2029">2029</option>
+                    <option value="2030">2030</option>
+                </select>년 &nbsp;&nbsp;
+
+                <select name="p_month">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>월 &nbsp;&nbsp;
+
+                <a class="btn_next" href="#none"> &nbsp;&nbsp; &#62; &nbsp;&nbsp; </a>
+            </div>
+
+            <!-- 달력 테이블 -->
+            <div class="calendar_wrap">
+                <table class="table_calender" id="table_calender">
+                    <thead>
+                    <tr>
+                        <th>일요일</th>
+                        <th>월요일</th>
+                        <th>화요일</th>
+                        <th>수요일</th>
+                        <th>목요일</th>
+                        <th>금요일</th>
+                        <th>토요일</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 일정 등록 모달 -->
+            <div id="write_plan">
+                <div class="write_plan_wrap">
+
+                    <div class="year_month_date">
+                        <select name="wp_year">
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                        </select>년 &nbsp;&nbsp;
+                        <select name="wp_month">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>월 &nbsp;&nbsp;
+                        <select name="wp_date">
+                        </select>
+                    </div>
+                    <div class="title_body">
+                        <form>
+                            <input type="text" name="p_title" placeholder="INPUT PLAN TITLE"><br>
+                            <input type="text" name="p_body" placeholder="INPUT PLAN BODY"><br>
+                            <input type="file" name="p_file" placeholder="SELECT IMAGE FILE"><br><br>
+                            <input type="button" value="WRITE">
+                            <input type="reset" value="RESET">
+                            <input type="button" value="CANCEL">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 일정 디테일 모달 -->
+            <div id="show_plan">
+                <div class="show_plan_wrap">
+
+                    <ul>
+                        <li class="detail">
+                            <div class="year_month_date">
+                                <select name="dp_year">
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                </select>년 &nbsp;&nbsp;
+                                <select name="dp_month">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>월 &nbsp;&nbsp;
+                                <select name="dp_date">
+                                </select>
+                            </div>
+                            <div class="title_body">
+                                <form>
+                                    <input type="text" name="p_title" placeholder="INPUT PLAN TITLE"><br>
+                                    <input type="text" name="p_body" placeholder="INPUT PLAN BODY"><br>
+                                    <img class="plan_img"><br>
+                                    <input type="file" name="p_file" placeholder="SELECT IMAGE FILE"><br><br>
+                                    <input type="button" value="MODIFY">
+                                    <input type="button" value="DELETE">
+                                    <input type="button" value="CLOSE">
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<footer th:replace="~{include/header_nav_footer::footer}"/>
+
+</body>
+</html>

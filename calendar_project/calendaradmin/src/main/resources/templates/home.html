@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="~{/include/title.html::title}"/>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/header_nav_footer.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+
+</head>
+<body>
+
+<header th:replace="~{/include/header_nav_footer.html::header}" />
+
+<nav th:replace="~{/include/header_nav_footer.html::nav}"/>
+
+<section>
+    <div id="section_wrap">
+        <div class="word">
+            ADMIN HOME
+        </div>
+        <div>
+            <img th:src="@{/img/intro.png}">
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{/include/header_nav_footer.html::footer}"/>
+
+</body>
+</html>

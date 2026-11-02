@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="~{/include/title.html::title}"/>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/header_nav_footer.css}">
+    <link rel="stylesheet" th:href="@{/css/user.css}">
+
+    <script th:src="@{/js/user.js}"></script>
+
+</head>
+<body>
+
+<header th:replace="~{/include/header_nav_footer.html::header}" />
+
+<nav th:replace="~{/include/header_nav_footer.html::nav}"/>
+
+<section>
+    <div id="section_wrap">
+        <div class="word">
+            USER LIST
+        </div>
+        <div class="content">
+            <table>
+                <thead>
+                <tr>
+                    <th>NO</th>
+                    <th>ID</th>
+                    <th>AUTHORITY</th>
+                    <th>MAIL</th>
+                    <th>PHONE</th>
+                    <th>REG_DATE</th>
+                    <th>MOD_DATE</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{/include/header_nav_footer.html::footer}"/>
+
+</body>
+</html>
+
+<template id="list-template">
+    <tr>
+        <td class="no"></td>
+        <td class="id"></td>
+        <td class="authority">
+            <select name="authority">
+                <option value="1">PRE_USER</option>
+                <option value="2">USER</option>
+            </select>
+        </td>
+        <td class="mail"></td>
+        <td class="phone"></td>
+        <td class="reg_date"></td>
+        <td class="mod_date"></td>
+    </tr>
+</template>

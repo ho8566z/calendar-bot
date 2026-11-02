@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration status="WARN">
+
+    <!-- 로그 설정에 사용할 변수를 설정 -->
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{3}] - %m%n</Property>
+                            <!-- {로그 출력할 때,원하는 형식} / $-5p :로그 레벨 /
+                            패키지 단계를 {n}글자만큼 보겠다는 의미 /
+                            $m$n : m은 로그 메세지, n은 개행하라는 의미-->
+        <Property name="LOG_PATH">logs</Property>
+    </Properties>
+
+    <!-- 로그를 출력할 대상 설정 -->
+    <Appenders>
+        <!-- 콘솔 출력 -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+        </Console>
+
+        <!-- 파일 기록 : ROOT -->
+        <File name="FileForRootByInfo" fileName="${LOG_PATH}/spring-root-info.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Filters>
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+
+        <!-- 파일 기록 : APPLICATION -->
+        <!-- INFO 이상 -->
+        <!--
+        <File name="FileForAppByInfo" fileName="${LOG_PATH}/spring-app-info.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Filters>
+                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+        -->
+
+        <!-- DEBUG 한정 -->
+        <File name="FileForAppByDebug" fileName="${LOG_PATH}/spring-app-debug.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Filters>
+                <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+
+        <!-- INFO 한정 -->
+        <File name="FileForAppByInfo" fileName="${LOG_PATH}/spring-app-info.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Filters>
+                <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+
+        <!-- WARN 한정 -->
+        <File name="FileForAppByWarn" fileName="${LOG_PATH}/spring-app-warn.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Filters>
+                <LevelRangeFilter minLevel="WARN" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+
+        <!-- ERROR 한정 -->
+        <File name="FileForAppByError" fileName="${LOG_PATH}/spring-app-error.log">
+            <PatternLayout pattern="${LOG_PATTERN}" />
+            <Filters>
+                <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+        </File>
+    </Appenders>
+
+    <!-- 로그를 남기를 로거(Logger) 설정 -->
+    <Loggers>
+        <!-- 기본 로거 -->
+        <Root level="info">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="FileForRootByInfo" />
+        </Root>
+
+        <!-- Application 로거 -->
+        <Logger name="com.office" level="debug" additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="FileForAppByDebug" />      <!-- Debug 전용 -->
+            <AppenderRef ref="FileForAppByInfo" />      <!-- Info 전용 -->
+            <AppenderRef ref="FileForAppByWarn" />      <!-- Warn 전용 -->
+            <AppenderRef ref="FileForAppByError" />      <!-- Error 전용 -->
+        </Logger>
+    </Loggers>
+
+</configuration>

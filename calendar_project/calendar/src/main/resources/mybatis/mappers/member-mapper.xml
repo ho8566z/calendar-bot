@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.office.calendar.member.mapper.MemberMapper">
+
+    <!-- 공통 SQL문 정의 -->
+    <sql id="baseSelectFields">
+        SELECT * FROM USER_MEMBER
+    </sql>
+
+    <select
+            id="isMember"
+            resultType="Boolean"
+            parameterType="String">
+
+        SELECT
+            COUNT(*)
+        FROM
+            USER_MEMBER
+        WHERE
+            ID = #{memId}
+
+    </select>
+
+    <insert
+            id="insertMember"
+            parameterType="MemberDto">
+
+        INSERT INTO
+            USER_MEMBER(ID, PW, MAIL, PHONE)
+        VALUES
+            (#{id}, #{pw}, #{mail}, #{phone})
+
+    </insert>
+
+    <select
+            id="selectMemberByID"
+            resultType="MemberDto"
+            parameterType="String">
+
+        SELECT * FROM
+             USER_MEMBER
+         WHERE
+             ID = #{memId}
+        <!-- <include refid="baseSelectFields"/> WHERE ID = #{id} -->
+
+    </select>
+
+    <update
+            id="updateMember"
+            parameterType="MemberDto">
+
+        UPDATE
+            USER_MEMBER
+        SET
+            PW = #{pw},
+            MAIL = #{mail},
+            PHONE = #{phone}
+        WHERE
+            NO = #{no}
+    </update>
+
+    <select
+            id="selectMemberByIDAndMail"
+            resultType="MemberDto"
+            parameterType="MemberDto">
+        SELECT * FROM
+            USER_MEMBER
+        WHERE
+            ID=#{id} AND MAIL=#{mail}
+
+        <!-- <include refid="baseSelectFields"/>
+        WHERE
+        ID=#{id} AND MAIL=#{mail} -->
+        ID=#{id} AND MAIL=#{mail} -->
+
+
+    </select>
+
+    <update
+            id="updatePassword"
+            parameterType="String">
+
+        UPDATE
+            USER_MEMBER
+        SET
+            PW = #{memPw}
+        WHERE
+            ID = #{memId}
+
+    </update>
+
+</mapper>

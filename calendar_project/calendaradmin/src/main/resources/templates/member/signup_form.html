@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="~{/include/title.html::title}"/>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/header_nav_footer.css}">
+    <link rel="stylesheet" th:href="@{/css/member.css}">
+
+    <script th:src="@{/js/member.js}"></script>
+
+</head>
+<body>
+
+<header th:replace="~{/include/header_nav_footer.html::header}" />
+
+<nav th:replace="~{/include/header_nav_footer.html::nav}"/>
+
+<section>
+    <div id="section_wrap">
+        <div class="word">
+            SIGN-UP FORM
+        </div>
+        <div class="content">
+            <form
+                    th:action="@{/member/signup_confirm}"
+                    name="signup_form"
+                    method="post">
+
+                <input type="text" name="id" placeholder="INPUT NEW MEMBER ID"><br>
+                <input type="password" name="pw" placeholder="INPUT NEW MEMBER PW"><br>
+                <input type="email" name="mail" placeholder="INPUT NEW MEMBER MAIL"><br>
+                <input type="text" name="phone" placeholder="INPUT NEW MEMBER PHONE"><br>
+                <input type="button" value="sign-up" onclick="signupForm();">
+                <input type="reset" value="reset">
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{/include/header_nav_footer.html::footer}"/>
+
+</body>
+</html>

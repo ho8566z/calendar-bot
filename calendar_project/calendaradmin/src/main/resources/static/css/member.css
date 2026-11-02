@@ -1,0 +1,39 @@
+section {
+	width: 100%;
+	padding: 30px 0;
+}
+
+#section_wrap {
+	width: 1000px;
+	margin: 0 auto;
+}
+
+#section_wrap .word {
+	text-align: center;
+	font-weight: bolder;
+	margin: 20px 0;
+	}
+
+#section_wrap .content {
+	margin-bottom: 30px;
+	text-align: center;
+}
+
+#section_wrap .delete_account {
+	text-align: center;
+	margin-bottom: 50px;
+	}
+
+#section_wrap .delete_account a {
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 5px 10px;
+	}
+
+/* OTHER START */
+#section_wrap .other {
+	text-align: center;
+	margin: 50px 0;
+}
+/* OTHER END */
