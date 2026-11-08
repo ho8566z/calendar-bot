@@ -35,6 +35,7 @@ async function fetchWritePlan(year, month, date, title, body, startTime, file) {
             removeCalenderTr();     // 기존 달력(<tr>) 제거
             addCalenderTr();        // 새 달력(<tr>) 생성
             fetchGetCurrentMonthPlans(); // 일정들 가져오는 함수
+            refreshSearchResult();
 
         }
 
@@ -102,6 +103,57 @@ async function fetchGetCurrentMonthPlans() {
 
 }
 
+// 일정 검색(본인 일정만). 응답이 늦게 와도 가장 최근에 요청한 검색의 결과만 보여 준다.
+async function fetchSearchPlans(keyword) {
+    console.log('fetchSearchPlans() CALLED!!');
+
+    last_search_keyword = keyword;
+    let seq = ++search_seq;
+
+    let queryString = new URLSearchParams({"keyword": keyword}).toString();
+
+    try {
+        let response = await fetch(`/planner/plans/search?${queryString}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log('fetchSearchPlans() COMMUNICATION SUCCESS!! ');
+
+        let data = await response.json();
+
+        if (seq !== search_seq) {
+            return;     // 더 최근에 요청한 검색이 있다
+        }
+
+        showSearchResult(data.plans, data.limit);
+
+    } catch (error) {
+        console.log('fetchSearchPlans() COMMUNICATION ERROR!! ', error);
+
+        if (seq === search_seq) {
+            document.querySelector('#search_result ul.search_list').innerHTML = '';
+            document.querySelector('#search_result .search_msg').textContent = '검색에 문제가 발생했습니다.';
+        }
+
+    }
+
+}
+
+// 검색 결과가 떠 있으면 같은 검색어로 다시 불러온다(일정을 등록·수정·삭제한 뒤 목록이 낡지 않게)
+function refreshSearchResult() {
+    if (last_search_keyword !== '') {
+        fetchSearchPlans(last_search_keyword);
+    }
+
+}
+
 async function fetchGetPlan(no) {
     console.log("fetchGetPlan() CALLED!!");
 
@@ -161,6 +213,7 @@ async function fetchRemovePlan(no) {
             removeCalenderTr();
             addCalenderTr();
             fetchGetCurrentMonthPlans();
+            refreshSearchResult();
 
         } else {
             alert("일정이 정상적으로 삭제 되지 않았습니다.");
@@ -218,6 +271,7 @@ async function fetchModifyPlan(no, year, month, date, title, body, startTime, fi
         removeCalenderTr();
         addCalenderTr();
         fetchGetCurrentMonthPlans();
+        refreshSearchResult();
 
     } catch (error) {
         console.log('fetchModifyPlan() COMMUNICATION ERROR!! ', error);
