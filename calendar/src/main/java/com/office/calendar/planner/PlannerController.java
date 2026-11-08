@@ -36,7 +36,7 @@ public class PlannerController {
     @PostMapping("/plan")
     public ResponseEntity<Map<String, Object>> writePlan(
             PlannerDto form,
-            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "file", required = false) MultipartFile file,
             Principal principal) {
         log.info("writePlan()");
 
@@ -51,21 +51,27 @@ public class PlannerController {
                 .body(form.getBody())
                 .build();
 
-        // SAVE FILE
-        String savedFileName = uploadFileService.upload(signInedMemberID, file);
-        if (savedFileName != null) {
+        // 이미지는 선택이다. 파일을 골랐을 때만 저장하고, 안 골랐거나 빈 파일이면 이미지 없이 등록한다.
+        if (hasFile(file)) {
+            String savedFileName = uploadFileService.upload(signInedMemberID, file);
+            if (savedFileName == null) {
+                Map<String, Object> errorMap = new HashMap<>();
+                errorMap.put("message", "File upload failed!!");
+                return ResponseEntity.badRequest().body(errorMap);      // 400 BAD
+
+            }
             plannerDto.setImg_name(savedFileName);
-
-            Map<String, Object> resultMap = plannerService.writePlan(plannerDto);
-            return ResponseEntity.ok(resultMap);    // 200 OK
-
-        } else {
-            Map<String, Object> errorMap = new HashMap<>();
-            errorMap.put("message", "File upload failed!!");
-            return ResponseEntity.badRequest().body(errorMap);      // 400 BAD
 
         }
 
+        Map<String, Object> resultMap = plannerService.writePlan(plannerDto);
+        return ResponseEntity.ok(resultMap);    // 200 OK
+
+    }
+
+    // 파일을 실제로 골랐는지(없거나 빈 파일이면 false)
+    private boolean hasFile(MultipartFile file) {
+        return file != null && !file.isEmpty();
     }
 
     // 일정들 가져오기
@@ -143,7 +149,7 @@ public class PlannerController {
                 .body(form.getBody())
                 .build();
 
-        if (file != null) {
+        if (hasFile(file)) {
             String savedFileName = uploadFileService.upload(signInedMemberID, file);
             if (savedFileName != null) {
                 plannerDto.setImg_name(savedFileName);

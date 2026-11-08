@@ -107,6 +107,61 @@ class PlannerControllerTest {
     }
 
     @Test
+    @DisplayName("등록: 이미지를 고르지 않아도 등록되고 이미지 이름은 비어 있다(plan-006)")
+    void write_withoutImage() throws Exception {
+        when(plannerService.writePlan(any())).thenReturn(Map.of("result", 1));
+
+        mockMvc.perform(multipart("/planner/plan")
+                        .param("year", "2026").param("month", "11").param("date", "8")
+                        .param("title", "이미지 없음").param("body", "내용")
+                        .param("img_name", "fake.png")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result").value(1));
+
+        ArgumentCaptor<PlannerDto> captor = ArgumentCaptor.forClass(PlannerDto.class);
+        verify(plannerService).writePlan(captor.capture());
+        assertThat(captor.getValue().getImg_name()).as("파일이 없으면 클라이언트가 보낸 이름도 쓰지 않는다").isNull();
+        assertThat(captor.getValue().getOwner_id()).isEqualTo("alice");
+        verify(uploadFileService, never()).upload(anyString(), any());
+    }
+
+    @Test
+    @DisplayName("등록: 빈 파일(0바이트)은 고르지 않은 것으로 보고 이미지 없이 등록한다")
+    void write_emptyFile() throws Exception {
+        when(plannerService.writePlan(any())).thenReturn(Map.of("result", 1));
+        MockMultipartFile empty = new MockMultipartFile("file", "", "application/octet-stream", new byte[0]);
+
+        mockMvc.perform(multipart("/planner/plan").file(empty)
+                        .param("year", "2026").param("month", "11").param("date", "8")
+                        .param("title", "t").param("body", "b")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isOk());
+
+        verify(uploadFileService, never()).upload(anyString(), any());
+        verify(plannerService).writePlan(any());
+    }
+
+    @Test
+    @DisplayName("수정: 빈 파일이 같이 와도 기존 이미지를 유지한 채 수정된다")
+    void modify_emptyFile() throws Exception {
+        when(plannerService.isOwner(5, "alice")).thenReturn(true);
+        when(plannerService.modifyPlan(any(), anyString())).thenReturn(Map.of("result", 1));
+        MockMultipartFile empty = new MockMultipartFile("file", "", "application/octet-stream", new byte[0]);
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/planner/plan/5").file(empty)
+                        .param("year", "2026").param("month", "11").param("date", "9")
+                        .param("title", "t").param("body", "b")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<PlannerDto> captor = ArgumentCaptor.forClass(PlannerDto.class);
+        verify(plannerService).modifyPlan(captor.capture(), org.mockito.ArgumentMatchers.eq("alice"));
+        assertThat(captor.getValue().getImg_name()).as("이미지 이름이 비어 있으면 서비스가 기존 이미지를 유지한다").isNull();
+        verify(uploadFileService, never()).upload(anyString(), any());
+    }
+
+    @Test
     @DisplayName("등록: 파일 저장에 실패하면 400이고 일정은 저장하지 않는다")
     void write_uploadFails() throws Exception {
         when(uploadFileService.upload(anyString(), any())).thenReturn(null);
