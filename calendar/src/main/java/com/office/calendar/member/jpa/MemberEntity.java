@@ -54,7 +54,10 @@ public class MemberEntity {
     @PrePersist
     protected void onCreate() {
 //        this.memAuthorityNo = 1;
-        this.authorityEntity = new AuthorityEntity((byte) 1, "PRE_USER");
+        // 권한이 정해지지 않은 새 회원만 PRE_USER로 시작한다(관리자 시드처럼 미리 정한 권한은 그대로 둔다)
+        if (this.authorityEntity == null) {
+            this.authorityEntity = new AuthorityEntity((byte) 1, "PRE_USER");
+        }
         this.memRegDate = LocalDateTime.now();
         this.memModDate = LocalDateTime.now();
     }
