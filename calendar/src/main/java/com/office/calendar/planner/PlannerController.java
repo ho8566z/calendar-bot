@@ -72,14 +72,15 @@ public class PlannerController {
 
     }
 
-    // 일정 가져오기
+    // 일정 가져오기: 본인 일정이 아니면 없는 일정과 같은 404
     @GetMapping("/plan")
     public ResponseEntity<Map<String, Object>> getPlan(
-            @RequestParam("no") int no
+            @RequestParam("no") int no,
+            Principal principal
     ) {
         log.info("getPlan()");
 
-        Map<String, Object> resultMap = plannerService.getPlan(no);
+        Map<String, Object> resultMap = plannerService.getPlan(no, principal.getName());
         if (resultMap.get("plan") == null) {
             return ResponseEntity.notFound().build();      // 404 NOT FOUND
 
@@ -89,18 +90,24 @@ public class PlannerController {
 
     }
 
-    // 일정 삭제하기
+    // 일정 삭제하기: 본인 일정이 아니면 404
     @DeleteMapping("/plan/{no}")
-    public ResponseEntity<Map<String, Object>> removePlan(@PathVariable("no") int no) {
+    public ResponseEntity<Map<String, Object>> removePlan(
+            @PathVariable("no") int no,
+            Principal principal) {
         log.info("removePlan()");
 
-        Map<String, Object> resultMap = plannerService.removePlan(no);
+        Map<String, Object> resultMap = plannerService.removePlan(no, principal.getName());
+        if ((int) resultMap.get("result") <= plannerService.PLAN_REMOVE_FAIL) {
+            return ResponseEntity.notFound().build();      // 404 NOT FOUND
+
+        }
 
         return ResponseEntity.ok(resultMap);
 
     }
 
-    // 일정 수정하기
+    // 일정 수정하기: 본인 일정이 아니면 404(파일 업로드 전에 먼저 확인)
     @PutMapping("/plan/{no}")
     public ResponseEntity<Map<String, Object>> modifyPlan(
             @PathVariable("no") int no,
@@ -110,15 +117,18 @@ public class PlannerController {
     ) {
         log.info("modifyPlan()");
 
+        String signInedMemberID = principal.getName();
+        if (!plannerService.isOwner(no, signInedMemberID)) {
+            return ResponseEntity.notFound().build();      // 404 NOT FOUND
+
+        }
+
         plannerDto.setNo(no);
         if (file != null) {
-            String signInedMemberID = principal.getName();
             String savedFileName = uploadFileService.upload(signInedMemberID, file);
             if (savedFileName != null) {
                 plannerDto.setImg_name(savedFileName);
                 plannerDto.setOri_owner_id(signInedMemberID);
-                Map<String, Object> resultMap = plannerService.modifyPlan(plannerDto);
-                return ResponseEntity.ok(resultMap);
 
             } else {
                 Map<String, Object> errorMap = new HashMap<>();
@@ -127,11 +137,15 @@ public class PlannerController {
 
             }
 
-        } else {
-            Map<String, Object> resultMap = plannerService.modifyPlan(plannerDto);
-            return ResponseEntity.ok(resultMap);
+        }
+
+        Map<String, Object> resultMap = plannerService.modifyPlan(plannerDto, signInedMemberID);
+        if ((int) resultMap.get("result") <= plannerService.PLAN_MODIFY_FAIL) {
+            return ResponseEntity.notFound().build();      // 404 NOT FOUND
 
         }
+
+        return ResponseEntity.ok(resultMap);
 
     }
 
