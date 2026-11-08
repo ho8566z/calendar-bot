@@ -19,7 +19,18 @@ public class AdminUserController {
 
     final private AdminUserService adminUserService;
 
-    // 사용자 목록·검색 데이터(JSON). 화면(/admin/users)은 뒤 단계에서 추가한다
+    // 사용자 관리 화면(/admin/users). 목록은 화면의 JS가 /admin/users/data로 가져온다
+    @GetMapping({"", "/"})
+    public String list() {
+        log.info("list()");
+
+        String nextPage = "admin/users";
+
+        return nextPage;
+
+    }
+
+    // 사용자 목록·검색 데이터(JSON)
     @GetMapping("/data")
     public ResponseEntity<Map<String, Object>> data(
             @RequestParam(value = "keyword", required = false) String keyword,

@@ -1,0 +1,135 @@
+section {
+    width: 100%;
+    padding: 30px 0;
+}
+
+#section_wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+#section_wrap .word {
+    text-align: center;
+    font-weight: bolder;
+    margin: 20px 0;
+}
+
+/* 검색 */
+#section_wrap .search_wrap {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#section_wrap .search_wrap input[type='text'] {
+    width: 240px;
+}
+
+#section_wrap .search_wrap input[type='submit'] {
+    width: 100px;
+    cursor: pointer;
+}
+
+/* 처리 결과·오류 안내 */
+#section_wrap .message {
+    min-height: 22px;
+    margin: 8px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+#section_wrap .message.ok {
+    color: #1a7f37;
+}
+
+#section_wrap .message.error {
+    color: #c62828;
+}
+
+/* 표 */
+#section_wrap .content table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#section_wrap .content table tr th {
+    border: 1px solid #ccc;
+    background-color: #f2f2f2;
+    padding: 6px 4px;
+}
+
+#section_wrap .content table tr td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 4px;
+    font-size: 14px;
+    word-break: break-all;
+}
+
+#section_wrap .content table tr td.empty {
+    padding: 20px;
+    color: #777;
+}
+
+/* 역할 표시 */
+#section_wrap .content table tr td.role {
+    font-weight: bold;
+}
+
+#section_wrap .content table tr td.role.PRE_USER {
+    color: #b26a00;
+}
+
+#section_wrap .content table tr td.role.USER {
+    color: #1a7f37;
+}
+
+#section_wrap .content table tr td.role.ADMIN {
+    color: #1a4fb3;
+}
+
+/* 승인 버튼 */
+#section_wrap .content table tr td.action button {
+    padding: 4px 10px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+#section_wrap .content table tr td.action button:disabled {
+    cursor: wait;
+    opacity: 0.5;
+}
+
+/* 페이지 이동 */
+#section_wrap .pager {
+    text-align: center;
+    margin: 14px 0;
+}
+
+#section_wrap .pager button {
+    padding: 4px 14px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+#section_wrap .pager button:disabled {
+    cursor: default;
+    opacity: 0.4;
+}
+
+#section_wrap .pager span {
+    margin: 0 12px;
+    font-size: 14px;
+}
+
+#section_wrap .hint {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+}

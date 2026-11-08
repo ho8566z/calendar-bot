@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 // 보안 설정 + 컨트롤러 + JSON 직렬화를 DB 없이 함께 확인한다(서비스는 가짜)
 @SpringJUnitWebConfig(classes = {SecurityConfig.class, AdminUserControllerTest.WebConfig.class})
@@ -100,6 +101,28 @@ class AdminUserControllerTest {
                 .andExpect(redirectedUrl("/member/access_denied"));
 
         verify(adminUserService, never()).getUsers(Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
+    }
+
+    @Test
+    @DisplayName("관리자는 사용자 관리 화면(admin/users)을 볼 수 있다")
+    void page_admin() throws Exception {
+        mockMvc.perform(get("/admin/users").with(user("boss").roles("ADMIN")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/users"));
+    }
+
+    @Test
+    @DisplayName("일반 사용자는 사용자 관리 화면에 들어갈 수 없다")
+    void page_user() throws Exception {
+        mockMvc.perform(get("/admin/users").with(user("alice").roles("USER")))
+                .andExpect(redirectedUrl("/member/access_denied"));
+    }
+
+    @Test
+    @DisplayName("로그인하지 않으면 사용자 관리 화면 대신 로그인 화면으로 보낸다")
+    void page_anonymous() throws Exception {
+        mockMvc.perform(get("/admin/users"))
+                .andExpect(redirectedUrl("/member/signin"));
     }
 
     @Test
