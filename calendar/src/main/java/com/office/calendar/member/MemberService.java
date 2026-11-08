@@ -162,7 +162,7 @@ public class MemberService {
     }
 
     @Transactional
-    public int modifyConfirm(MemberDto memberDto) {
+    public int modifyConfirm(MemberDto memberDto, String loginedID) {
         System.out.println(CLASS_NAME.concat("modifyConfirm()"));
 
         String encodedPW = passwordEncoder.encode(memberDto.getPw());
@@ -172,7 +172,7 @@ public class MemberService {
 //        return memberMapper.updateMember(memberDto);
 
         Optional<MemberEntity> optionalMember =
-                memberRepository.findById(memberDto.getNo());
+                memberRepository.findByMemId(loginedID);   // 폼의 회원번호(no)는 쓰지 않는다
         if (optionalMember.isPresent()) {
             MemberEntity memberEntity = optionalMember.get();
             memberEntity.setMemPw(memberDto.getPw());
