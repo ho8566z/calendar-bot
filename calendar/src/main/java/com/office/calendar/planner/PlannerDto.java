@@ -1,6 +1,7 @@
 package com.office.calendar.planner;
 
 import com.office.calendar.planner.jpa.PlannerEntity;
+import com.office.calendar.planner.util.StartTimes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class PlannerDto {
     private String title;
     private String body;
     private String img_name;
+    private String start_time;      // 시작 시간(HH:mm, 선택)
     private String reg_date;
     private String mod_date;
 
@@ -43,6 +45,7 @@ public class PlannerDto {
                 .planTitle(title)
                 .planBody(body)
                 .planImgName(img_name)
+                .planStartTime(StartTimes.toLocalTime(start_time))
                 .planRegDate(reg_date != null ? LocalDateTime.parse(reg_date, formatter) : null)
                 .planModDate(mod_date != null ? LocalDateTime.parse(mod_date, formatter) : null)
                 .build();

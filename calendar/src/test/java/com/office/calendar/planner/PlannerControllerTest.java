@@ -162,6 +162,97 @@ class PlannerControllerTest {
     }
 
     @Test
+    @DisplayName("등록: 시작 시간(HH:mm)을 보내면 그 값으로 저장한다")
+    void write_withStartTime() throws Exception {
+        when(plannerService.writePlan(any())).thenReturn(Map.of("result", 1));
+
+        mockMvc.perform(multipart("/planner/plan")
+                        .param("year", "2026").param("month", "11").param("date", "8")
+                        .param("title", "t").param("body", "b").param("start_time", "14:30")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<PlannerDto> captor = ArgumentCaptor.forClass(PlannerDto.class);
+        verify(plannerService).writePlan(captor.capture());
+        assertThat(captor.getValue().getStart_time()).isEqualTo("14:30");
+    }
+
+    @Test
+    @DisplayName("등록: 시작 시간을 비워 보내면 시간 없음으로 저장한다")
+    void write_blankStartTime() throws Exception {
+        when(plannerService.writePlan(any())).thenReturn(Map.of("result", 1));
+
+        mockMvc.perform(multipart("/planner/plan")
+                        .param("year", "2026").param("month", "11").param("date", "8")
+                        .param("title", "t").param("body", "b").param("start_time", "")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<PlannerDto> captor = ArgumentCaptor.forClass(PlannerDto.class);
+        verify(plannerService).writePlan(captor.capture());
+        assertThat(captor.getValue().getStart_time()).isNull();
+    }
+
+    @Test
+    @DisplayName("등록: 시작 시간 형식이 틀리면 400 INVALID_START_TIME이고 파일도 일정도 저장하지 않는다")
+    void write_invalidStartTime() throws Exception {
+        mockMvc.perform(multipart("/planner/plan").file(image)
+                        .param("year", "2026").param("month", "11").param("date", "8")
+                        .param("title", "t").param("body", "b").param("start_time", "25:00")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("INVALID_START_TIME"));
+
+        verify(uploadFileService, never()).upload(anyString(), any());
+        verify(plannerService, never()).writePlan(any());
+    }
+
+    @Test
+    @DisplayName("수정: 시작 시간을 비워 보내면 null로 전달해 시간이 지워지게 한다")
+    void modify_blankStartTime() throws Exception {
+        when(plannerService.isOwner(5, "alice")).thenReturn(true);
+        when(plannerService.modifyPlan(any(), anyString())).thenReturn(Map.of("result", 1));
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/planner/plan/5")
+                        .param("year", "2026").param("month", "11").param("date", "9")
+                        .param("title", "t").param("body", "b").param("start_time", "")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<PlannerDto> captor = ArgumentCaptor.forClass(PlannerDto.class);
+        verify(plannerService).modifyPlan(captor.capture(), org.mockito.ArgumentMatchers.eq("alice"));
+        assertThat(captor.getValue().getStart_time()).isNull();
+    }
+
+    @Test
+    @DisplayName("수정: 시작 시간 형식이 틀리면 400이고 파일도 수정도 하지 않는다")
+    void modify_invalidStartTime() throws Exception {
+        when(plannerService.isOwner(5, "alice")).thenReturn(true);
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/planner/plan/5").file(image)
+                        .param("year", "2026").param("month", "11").param("date", "9")
+                        .param("title", "t").param("body", "b").param("start_time", "9:30")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("INVALID_START_TIME"));
+
+        verify(uploadFileService, never()).upload(anyString(), any());
+        verify(plannerService, never()).modifyPlan(any(), anyString());
+    }
+
+    @Test
+    @DisplayName("수정: 남의 일정이면 시작 시간이 틀려도 형식 오류가 아니라 404(존재 여부를 알리지 않음)")
+    void modify_notOwnerBeatsInvalidStartTime() throws Exception {
+        when(plannerService.isOwner(5, "mallory")).thenReturn(false);
+
+        mockMvc.perform(multipart(HttpMethod.PUT, "/planner/plan/5")
+                        .param("year", "2026").param("month", "11").param("date", "9")
+                        .param("title", "t").param("body", "b").param("start_time", "99:99")
+                        .with(user("mallory").roles("USER")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @DisplayName("등록: 파일 저장에 실패하면 400이고 일정은 저장하지 않는다")
     void write_uploadFails() throws Exception {
         when(uploadFileService.upload(anyString(), any())).thenReturn(null);

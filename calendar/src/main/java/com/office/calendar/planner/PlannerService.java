@@ -2,11 +2,13 @@ package com.office.calendar.planner;
 
 import com.office.calendar.planner.jpa.PlannerEntity;
 import com.office.calendar.planner.jpa.PlannerRepository;
+import com.office.calendar.planner.util.StartTimes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,12 @@ public class PlannerService {
 
     final public int PLAN_MODIFY_SUCCESS = 1;
     final public int PLAN_MODIFY_FAIL = 0;
+
+    // 일정 정렬: 날짜 → 시작 시간(시간 없는 일정은 그날의 맨 뒤) → 번호
+    private static final Comparator<PlannerEntity> PLAN_ORDER = Comparator
+            .comparingInt(PlannerEntity::getPlanDate)
+            .thenComparing(PlannerEntity::getPlanStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+            .thenComparingInt(PlannerEntity::getPlanNo);
 
     final private PlannerRepository plannerRepository;
 
@@ -65,6 +73,7 @@ public class PlannerService {
                 plannerRepository.findByPlanYearAndPlanMonthAndPlanOwnerId(year, month, ownerId);
 
         List<PlannerDto> plannerDtos = plannerEntities.stream()
+                .sorted(PLAN_ORDER)
                 .map(PlannerEntity::toDto)
                 .collect(Collectors.toList());
 
@@ -134,6 +143,8 @@ public class PlannerService {
             plannerEntity.setPlanDate(plannerDto.getDate());
             plannerEntity.setPlanTitle(plannerDto.getTitle());
             plannerEntity.setPlanBody(plannerDto.getBody());
+            // 시작 시간은 선택이라 비우면 시간이 지워진다
+            plannerEntity.setPlanStartTime(StartTimes.toLocalTime(plannerDto.getStart_time()));
 
             if (plannerDto.getImg_name() != null) {
                 plannerEntity.setPlanImgName(plannerDto.getImg_name());

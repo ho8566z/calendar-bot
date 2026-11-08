@@ -1,5 +1,6 @@
 package com.office.calendar.planner;
 
+import com.office.calendar.planner.util.StartTimes;
 import com.office.calendar.planner.util.UploadFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,14 @@ public class PlannerController {
 
         String signInedMemberID = principal.getName();
 
+        // 시작 시간은 선택이다. 값이 있으면 HH:mm 형식이어야 한다(파일을 저장하기 전에 먼저 확인)
+        String startTime;
+        try {
+            startTime = StartTimes.normalize(form.getStart_time());
+        } catch (IllegalArgumentException e) {
+            return invalidStartTime();
+        }
+
         PlannerDto plannerDto = PlannerDto.builder()
                 .owner_id(signInedMemberID)
                 .year(form.getYear())
@@ -49,6 +58,7 @@ public class PlannerController {
                 .date(form.getDate())
                 .title(form.getTitle())
                 .body(form.getBody())
+                .start_time(startTime)
                 .build();
 
         // 이미지는 선택이다. 파일을 골랐을 때만 저장하고, 안 골랐거나 빈 파일이면 이미지 없이 등록한다.
@@ -66,6 +76,15 @@ public class PlannerController {
 
         Map<String, Object> resultMap = plannerService.writePlan(plannerDto);
         return ResponseEntity.ok(resultMap);    // 200 OK
+
+    }
+
+    // 시작 시간 형식 오류 응답(400)
+    private ResponseEntity<Map<String, Object>> invalidStartTime() {
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("code", "INVALID_START_TIME");
+        errorMap.put("message", "시작 시간은 HH:mm 형식이어야 합니다.");
+        return ResponseEntity.badRequest().body(errorMap);
 
     }
 
@@ -140,6 +159,13 @@ public class PlannerController {
 
         }
 
+        String startTime;
+        try {
+            startTime = StartTimes.normalize(form.getStart_time());
+        } catch (IllegalArgumentException e) {
+            return invalidStartTime();
+        }
+
         PlannerDto plannerDto = PlannerDto.builder()
                 .no(no)
                 .year(form.getYear())
@@ -147,6 +173,7 @@ public class PlannerController {
                 .date(form.getDate())
                 .title(form.getTitle())
                 .body(form.getBody())
+                .start_time(startTime)
                 .build();
 
         if (hasFile(file)) {
