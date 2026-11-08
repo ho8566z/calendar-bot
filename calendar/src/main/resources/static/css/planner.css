@@ -491,3 +491,75 @@ section {
 	}
 }
 /* MOBILE END */
+
+/* MOBILE MODAL START: 등록·상세 모달과 검색. PC 규칙이 id 선택자라 같은 선택자로 덮어쓴다 */
+@media (max-width: 768px) {
+	/* 모달은 화면 전체 크기로 열고, 내용이 길면 스크롤한다 */
+	#write_plan,
+	#show_plan {
+		overflow-y: auto;
+		background-color: #fff;
+	}
+
+	#write_plan .write_plan_wrap,
+	#show_plan .show_plan_wrap {
+		width: auto;
+		min-height: 100%;
+		margin: 0;
+		padding: 20px 12px;
+		border: 0;
+		border-radius: 0;
+		box-sizing: border-box;
+	}
+
+	/* 입력 칸은 세로로 나열하고 폭을 화면에 맞춘다 */
+	#write_plan .write_plan_wrap input,
+	#show_plan .show_plan_wrap input,
+	#write_plan .write_plan_wrap input[type='file'],
+	#show_plan .show_plan_wrap input[type='file'] {
+		width: 100%;
+		max-width: 360px;
+		box-sizing: border-box;
+	}
+
+	#write_plan .write_plan_wrap input[type='button'],
+	#write_plan .write_plan_wrap input[type='reset'],
+	#show_plan .show_plan_wrap input[type='button'] {
+		width: 30%;
+		max-width: 120px;
+		min-height: 44px;
+	}
+
+	#show_plan .show_plan_wrap ul {
+		overflow: visible;
+	}
+
+	#show_plan .show_plan_wrap ul li.detail {
+		float: none;
+		width: auto;
+		padding: 0;
+	}
+
+	#show_plan .show_plan_wrap img.plan_img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* 검색 */
+	#section_wrap .search_wrap {
+		width: auto;
+		max-width: 500px;
+	}
+
+	#section_wrap .search_wrap input[type='text'] {
+		width: 100%;
+		max-width: 360px;
+		box-sizing: border-box;
+	}
+
+	#search_result {
+		width: auto;
+		padding: 0 4px;
+	}
+}
+/* MOBILE MODAL END */

@@ -88,6 +88,42 @@ class ResponsiveTemplatesTest {
     }
 
     @Test
+    @DisplayName("폭을 481px 이상으로 고정한 스타일 파일은 모두 768px 이하 모바일 규칙을 함께 가진다(새 CSS 가 PC 폭에 고정되는 것을 막는다)")
+    void fixedWideCssHasMobileOverride() throws IOException {
+        Path cssDir = Paths.get("src/main/resources/static/css");
+        // width: 1000px 같은 고정 폭(min-width·max-width 는 제외)
+        java.util.regex.Pattern fixedWidth = java.util.regex.Pattern.compile("(?<![-\\w])width:\\s*(\\d+)px");
+
+        try (Stream<Path> files = Files.list(cssDir)) {
+            for (Path css : files.filter(p -> p.toString().endsWith(".css")).collect(Collectors.toList())) {
+                String text = Files.readString(css, StandardCharsets.UTF_8);
+                boolean hasWide = false;
+                java.util.regex.Matcher m = fixedWidth.matcher(text);
+                while (m.find()) {
+                    if (Integer.parseInt(m.group(1)) > 480) {
+                        hasWide = true;
+                    }
+                }
+                if (hasWide) {
+                    assertThat(text).as(css.getFileName() + " 은 폭을 고정했으므로 모바일 규칙이 필요하다").contains("@media (max-width: 768px)");
+                }
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("모달 화면은 모바일에서 전체 크기로 열리고 PC용 id 선택자 규칙을 같은 선택자로 덮어쓴다")
+    void modalsAreFullScreenOnMobile() throws IOException {
+        String css = Files.readString(Paths.get("src/main/resources/static/css/planner.css"), StandardCharsets.UTF_8);
+        String mobile = css.substring(css.indexOf("MOBILE MODAL START"));
+
+        assertThat(mobile).contains("#write_plan .write_plan_wrap").contains("#show_plan .show_plan_wrap");
+        assertThat(mobile).contains("#write_plan .write_plan_wrap input[type='file']").contains("#show_plan .show_plan_wrap input[type='file']");
+        assertThat(mobile).contains("#show_plan .show_plan_wrap ul li.detail").contains("float: none").contains("overflow-y: auto");
+        assertThat(mobile).contains("#show_plan .show_plan_wrap img.plan_img");
+    }
+
+    @Test
     @DisplayName("viewport 메타는 <head> 안, charset 메타 다음에 있다")
     void viewportInsideHead() throws IOException {
         for (Path page : pages()) {

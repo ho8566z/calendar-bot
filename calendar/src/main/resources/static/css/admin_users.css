@@ -133,3 +133,34 @@ section {
     color: #666;
     line-height: 1.6;
 }
+
+
+/* 모바일(768px 이하): 열이 많은 표는 가로로 스크롤하고, 검색 칸은 화면 폭에 맞춘다 */
+@media (max-width: 768px) {
+    section {
+        padding: 16px 0;
+    }
+
+    #section_wrap {
+        padding: 0 8px;
+    }
+
+    #section_wrap .search_wrap input[type='text'] {
+        width: 100%;
+        max-width: 240px;
+    }
+
+    #section_wrap .content table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    #section_wrap .pager button {
+        min-height: 44px;
+    }
+
+    #section_wrap .content table tr td.action button {
+        min-height: 36px;
+    }
+}
