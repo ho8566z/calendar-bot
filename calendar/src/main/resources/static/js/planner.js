@@ -180,6 +180,7 @@ function initEvents() {
 
             let title = document.querySelector('#write_plan input[name="p_title"]').value;      // 제목
             let body = document.querySelector('#write_plan input[name="p_body"]').value;        // 내용
+            let startTime = document.querySelector('#write_plan input[name="p_time"]').value;    // 시작 시간(선택)
 
             if (title === '') {
                 alert('INPUT NEW PLAN TITLE!!');
@@ -198,7 +199,7 @@ function initEvents() {
 
                 // 비동기 방식으로 서버에 전송
                 // 이미지는 선택이므로 고르지 않았으면 null
-                fetchWritePlan(year, month, date, title, body, files.length > 0 ? files[0] : null);
+                fetchWritePlan(year, month, date, title, body, startTime, files.length > 0 ? files[0] : null);
 
             }
 
@@ -246,11 +247,12 @@ function initEvents() {
 
             let title = document.querySelector('#show_plan input[name="p_title"]').value;
             let body = document.querySelector('#show_plan input[name="p_body"]').value;
+            let startTime = document.querySelector('#show_plan input[name="p_time"]').value;
 
             let fileInput = document.querySelector('#show_plan input[name="p_file"]');
             let file = fileInput.files.length > 0 ? fileInput.files[0] : null;
 
-            fetchModifyPlan(no, year, month, date, title, body, file);
+            fetchModifyPlan(no, year, month, date, title, body, startTime, file);
 
         }
 
@@ -453,6 +455,7 @@ function hideWritePlanView() {
 
     document.querySelector('#write_plan input[name="p_title"]').value = '';
     document.querySelector('#write_plan input[name="p_body"]').value = '';
+    document.querySelector('#write_plan input[name="p_time"]').value = '';
     document.querySelector('#write_plan input[name="p_file"]').value = '';
 
     document.querySelector('#write_plan').style.display = 'none';
@@ -496,6 +499,7 @@ function showDetailPlanView(plan) {
 
     showPlan.querySelector('input[name="p_title"]').value = plan.title;
     showPlan.querySelector('input[name="p_body"]').value = plan.body;
+    showPlan.querySelector('input[name="p_time"]').value = plan.start_time || '';
 
     // 이미지는 선택이라 없을 수 있다. 없으면 이미지 영역을 숨긴다.
     let planImg = showPlan.querySelector('img.plan_img');
@@ -524,6 +528,7 @@ function hideDetailPlanView() {
 
     showPlan.querySelector('input[name="p_title"]').value = '';
     showPlan.querySelector('input[name="p_body"]').value = '';
+    showPlan.querySelector('input[name="p_time"]').value = '';
     showPlan.querySelector('input[name="p_file"]').value = '';
     showPlan.querySelector('img.plan_img').removeAttribute('src');
 

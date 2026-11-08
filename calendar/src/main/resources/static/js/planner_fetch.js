@@ -1,4 +1,4 @@
-async function fetchWritePlan(year, month, date, title, body, file) {
+async function fetchWritePlan(year, month, date, title, body, startTime, file) {
     console.log('fetchWritePlan() CALLED!!');
 
     let formData = new FormData();
@@ -7,6 +7,7 @@ async function fetchWritePlan(year, month, date, title, body, file) {
     formData.append("date", date);
     formData.append("title", title);
     formData.append("body", body);
+    formData.append("start_time", startTime || '');       // 비어 있으면 시간 없음
     if (file) {
         formData.append("file", file);
     }
@@ -79,11 +80,17 @@ async function fetchGetCurrentMonthPlans() {
 
         let plans = data.plans;
         plans.forEach(dto => {
-            let appendTag = `<li><a class="title" href="#none" data-no="${dto.no}">${dto.title}</a></li>`;
             let targetElement = document.querySelector(`#date_${dto.date} ul.plan`);
-            // targetElement.appendChild(appendTag);
             if (targetElement) {
-                targetElement.insertAdjacentHTML('beforeend', appendTag);
+                // 시작 시간이 있으면 제목 앞에 'HH:mm '을 붙인다. 제목은 textContent로 넣어 HTML로 해석되지 않게 한다.
+                let li = document.createElement('li');
+                let link = document.createElement('a');
+                link.className = 'title';
+                link.href = '#none';
+                link.dataset.no = dto.no;
+                link.textContent = (dto.start_time ? dto.start_time + ' ' : '') + dto.title;
+                li.appendChild(link);
+                targetElement.appendChild(li);
             }
 
         });
@@ -170,7 +177,7 @@ async function fetchRemovePlan(no) {
 
 }
 
-async function fetchModifyPlan(no, year, month, date, title, body, file) {
+async function fetchModifyPlan(no, year, month, date, title, body, startTime, file) {
     console.log('fetchModifyPlan() CALLED!!');
 
     let formData = new FormData();
@@ -179,6 +186,7 @@ async function fetchModifyPlan(no, year, month, date, title, body, file) {
     formData.append('date', date);
     formData.append('title', title);
     formData.append('body', body);
+    formData.append('start_time', startTime || '');         // 비우면 서버가 시간을 지운다
 
     if (file != null || file != undefined) {
         formData.append('file', file);
