@@ -6,6 +6,7 @@ import com.office.calendar.member.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,10 @@ public class MemberService {
     final private MemberDao memberDao;
     final private PasswordEncoder passwordEncoder;
     final private JavaMailSender javaMailSender;
+
+    // 보내는 사람 주소는 메일 계정 설정(MAIL_USERNAME)과 같은 값을 쓴다
+    @Value("${spring.mail.username}")
+    private String mailFrom;
     final private MemberMapper memberMapper;
     final private MemberRepository memberRepository;
 
@@ -265,7 +270,7 @@ public class MemberService {
         simpleMailMessage.setTo(toMailAddr);
         simpleMailMessage.setSubject("[MyCalendar] 새 비밀번호 안내입니다.");
         simpleMailMessage.setText("새 비밀번호: " + newPassword);
-        simpleMailMessage.setFrom("hohasic@gmail.com");
+        simpleMailMessage.setFrom(mailFrom);
 
         javaMailSender.send(simpleMailMessage);
 
