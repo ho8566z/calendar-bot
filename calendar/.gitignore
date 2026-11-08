@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Local config (비밀 설정, 커밋 금지) ###
+application-local.properties
+application-local.yml
+.env
+*.env
