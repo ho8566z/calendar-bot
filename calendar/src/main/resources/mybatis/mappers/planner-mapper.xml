@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.office.calendar.planner.mapper.PlannerMapper">
+
+    <!-- 일정 검색: 항상 본인(OWNER_ID) 일정만 대상이다.
+         keyword가 있으면 제목 또는 내용에 포함된 일정으로 좁힌다.
+         LIKE의 와일드카드(%, _)는 서비스에서 '!'로 이스케이프해서 넘기므로 ESCAPE '!'를 쓴다.
+         DATE, YEAR, MONTH는 예약어와 겹치기 쉬워 컬럼 이름과 별칭에 백틱을 쓴다. -->
+    <select id="searchPlans"
+            resultType="com.office.calendar.planner.PlannerDto">
+        SELECT
+            p.NO AS `no`,
+            p.ORI_NO AS ori_no,
+            p.OWNER_ID AS owner_id,
+            p.ORI_OWNER_ID AS ori_owner_id,
+            p.`YEAR` AS `year`,
+            p.`MONTH` AS `month`,
+            p.`DATE` AS `date`,
+            p.TITLE AS title,
+            p.BODY AS body,
+            p.IMG_NAME AS img_name,
+            TIME_FORMAT(p.START_TIME, '%H:%i') AS start_time,
+            DATE_FORMAT(p.REG_DATE, '%Y-%m-%d %H:%i:%s') AS reg_date,
+            DATE_FORMAT(p.MOD_DATE, '%Y-%m-%d %H:%i:%s') AS mod_date
+        FROM
+            PLAN p
+        <where>
+            p.OWNER_ID = #{ownerId}
+            <if test="keyword != null and keyword != ''">
+                AND (p.TITLE LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!'
+                     OR p.BODY LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!')
+            </if>
+        </where>
+        ORDER BY
+            p.`YEAR` DESC, p.`MONTH` DESC, p.`DATE` DESC,
+            (p.START_TIME IS NULL) ASC, p.START_TIME ASC,
+            p.NO DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>
