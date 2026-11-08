@@ -180,7 +180,6 @@ function initEvents() {
 
             let title = document.querySelector('#write_plan input[name="p_title"]').value;      // 제목
             let body = document.querySelector('#write_plan input[name="p_body"]').value;        // 내용
-            let file = document.querySelector('#write_plan input[name="p_file"]').value;        // 파일
 
             if (title === '') {
                 alert('INPUT NEW PLAN TITLE!!');
@@ -190,10 +189,6 @@ function initEvents() {
                 alert('INPUT NEW PLAN BODY!!');
                 document.querySelector('#write_plan input[name="p_body"]').focus();
 
-            } else if (file === '') {
-                alert('SELECT FILE!!');
-                document.querySelector('#write_plan input[name="p_file"]').focus();
-
             } else {
                 let inputFile = document.querySelector('#write_plan input[name="p_file"]');
                 console.log('inputFile: ', inputFile);
@@ -202,7 +197,8 @@ function initEvents() {
                 console.log('files: ', files);
 
                 // 비동기 방식으로 서버에 전송
-                fetchWritePlan(year, month, date, title, body, files[0]);
+                // 이미지는 선택이므로 고르지 않았으면 null
+                fetchWritePlan(year, month, date, title, body, files.length > 0 ? files[0] : null);
 
             }
 
@@ -231,7 +227,9 @@ function initEvents() {
             let no = event.target.getAttribute("data-no");
             console.log('no: ', no);
 
-            fetchRemovePlan(no);
+            if (window.confirm('일정을 삭제할까요? 삭제한 일정은 되돌릴 수 없습니다.')) {
+                fetchRemovePlan(no);
+            }
 
         }
 
@@ -499,8 +497,17 @@ function showDetailPlanView(plan) {
     showPlan.querySelector('input[name="p_title"]').value = plan.title;
     showPlan.querySelector('input[name="p_body"]').value = plan.body;
 
-    let uploadImgURI = `/planUploadImg/${plan.ori_owner_id}/${plan.img_name}`;
-    showPlan.querySelector('img.plan_img').src = uploadImgURI;
+    // 이미지는 선택이라 없을 수 있다. 없으면 이미지 영역을 숨긴다.
+    let planImg = showPlan.querySelector('img.plan_img');
+    if (plan.img_name) {
+        planImg.src = `/planUploadImg/${plan.ori_owner_id}/${plan.img_name}`;
+        planImg.style.display = '';
+
+    } else {
+        planImg.removeAttribute('src');
+        planImg.style.display = 'none';
+
+    }
 
     showPlan.querySelectorAll("input").forEach(input => input.dataset.no = plan.no);
     showPlan.dataset.ori_no = plan.ori_no;
@@ -518,6 +525,7 @@ function hideDetailPlanView() {
     showPlan.querySelector('input[name="p_title"]').value = '';
     showPlan.querySelector('input[name="p_body"]').value = '';
     showPlan.querySelector('input[name="p_file"]').value = '';
+    showPlan.querySelector('img.plan_img').removeAttribute('src');
 
     showPlan.style.display = 'none';
 
