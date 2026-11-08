@@ -1,7 +1,9 @@
 package com.office.calendar.planner;
 
+import com.office.calendar.common.LikeKeyword;
 import com.office.calendar.planner.jpa.PlannerEntity;
 import com.office.calendar.planner.jpa.PlannerRepository;
+import com.office.calendar.planner.mapper.PlannerMapper;
 import com.office.calendar.planner.util.StartTimes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +36,10 @@ public class PlannerService {
             .thenComparing(PlannerEntity::getPlanStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparingInt(PlannerEntity::getPlanNo);
 
+    public static final int SEARCH_LIMIT = 100;     // 검색 결과 최대 건수
+
     final private PlannerRepository plannerRepository;
+    final private PlannerMapper plannerMapper;
 
     // 일정 등록
     @Transactional
@@ -78,6 +83,25 @@ public class PlannerService {
                 .collect(Collectors.toList());
 
         resultMap.put("plans", plannerDtos);
+
+        return resultMap;
+
+    }
+
+    // 일정 검색(plan-008): 본인 일정 중 제목·내용에 검색어가 들어간 것. 검색어가 비면 빈 목록(전체 목록을 내려주지 않는다)
+    @Transactional(readOnly = true)
+    public Map<String, Object> searchPlans(String keyword, String ownerId) {
+        log.info("searchPlans()");
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        String likeKeyword = LikeKeyword.toPattern(keyword);
+        List<PlannerDto> plans = likeKeyword == null
+                ? List.of()
+                : plannerMapper.searchPlans(ownerId, likeKeyword, SEARCH_LIMIT);
+
+        resultMap.put("plans", plans);
+        resultMap.put("limit", SEARCH_LIMIT);
 
         return resultMap;
 

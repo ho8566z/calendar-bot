@@ -107,6 +107,17 @@ public class PlannerController {
 
     }
 
+    // 일정 검색: 본인 일정만. /plan/{no} 같은 경로와 겹치지 않게 /plans/search로 둔다
+    @GetMapping("/plans/search")
+    public ResponseEntity<Map<String, Object>> searchPlans(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Principal principal) {
+        log.info("searchPlans()");
+
+        return ResponseEntity.ok(plannerService.searchPlans(keyword, principal.getName()));
+
+    }
+
     // 일정 가져오기: 본인 일정이 아니면 없는 일정과 같은 404
     @GetMapping("/plan")
     public ResponseEntity<Map<String, Object>> getPlan(

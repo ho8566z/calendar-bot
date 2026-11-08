@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -159,6 +160,30 @@ class PlannerControllerTest {
         verify(plannerService).modifyPlan(captor.capture(), org.mockito.ArgumentMatchers.eq("alice"));
         assertThat(captor.getValue().getImg_name()).as("이미지 이름이 비어 있으면 서비스가 기존 이미지를 유지한다").isNull();
         verify(uploadFileService, never()).upload(anyString(), any());
+    }
+
+    @Test
+    @DisplayName("검색: 로그인한 사람의 아이디로만 검색한다(요청 값으로 다른 사람을 지정할 수 없다)")
+    void search_usesPrincipal() throws Exception {
+        when(plannerService.searchPlans("치과", "alice")).thenReturn(Map.of("plans", java.util.List.of(), "limit", 100));
+
+        mockMvc.perform(get("/planner/plans/search").param("keyword", "치과").param("owner_id", "bob")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.limit").value(100));
+
+        verify(plannerService).searchPlans("치과", "alice");
+        verify(plannerService, never()).searchPlans(anyString(), org.mockito.ArgumentMatchers.eq("bob"));
+    }
+
+    @Test
+    @DisplayName("검색: keyword 없이 호출해도 400이 아니라 200(빈 목록)")
+    void search_withoutKeyword() throws Exception {
+        when(plannerService.searchPlans(null, "alice")).thenReturn(Map.of("plans", java.util.List.of(), "limit", 100));
+
+        mockMvc.perform(get("/planner/plans/search").with(user("alice").roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.plans").isEmpty());
     }
 
     @Test
