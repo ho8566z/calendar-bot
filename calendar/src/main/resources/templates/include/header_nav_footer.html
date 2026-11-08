@@ -6,9 +6,11 @@
 <header th:fragment="header">
     <div id="top">
         <h3>MY CALENDAR</h3>
+        <!-- 좁은 화면(모바일)에서만 보이는 메뉴 버튼 -->
+        <button type="button" id="menu_toggle" aria-controls="header_wrap nav_wrap" aria-expanded="false">MENU</button>
     </div>
     <div id="header_wrap">
-        <a th:href="@{/}">home</a> &nbsp;&nbsp;
+        <a th:href="@{/}">home</a>
 
         <!--
         <span th:if="${session.loginedID == null}">
@@ -23,16 +25,17 @@
         -->
 
         <th:block sec:authorize="!hasAnyRole('PRE_USER', 'USER', 'ADMIN')">
-            <a th:href="@{/member/signup}">sign-up</a> &nbsp;&nbsp;
-            <a th:href="@{/member/signin}">sign-in</a> &nbsp;&nbsp;
+            <a th:href="@{/member/signup}">sign-up</a>
+            <a th:href="@{/member/signin}">sign-in</a>
         </th:block>
 
         <th:block sec:authorize="hasAnyRole('PRE_USER', 'USER', 'ADMIN')">
-            <a th:href="@{/member/modify}">modify</a> &nbsp;&nbsp;
-            <a th:href="@{/member/signout_confirm}">signout</a> &nbsp;&nbsp;
+            <a th:href="@{/member/modify}">modify</a>
+            <a th:href="@{/member/signout_confirm}">signout</a>
         </th:block>
 
     </div>
+    <script th:src="@{/js/menu.js}" defer></script>
 </header>
 
 <nav th:fragment="nav">

@@ -18,6 +18,15 @@ header {
 	text-align: right;
 	}
 
+#header_wrap a {
+	margin-left: 12px;
+	}
+
+/* 메뉴 버튼은 모바일 폭에서만 보인다 */
+#menu_toggle {
+	display: none;
+	}
+
 nav {
 	width: 100%;
 	border-top: 1px solid #ccc;
@@ -47,3 +56,69 @@ footer {
 	text-align: center;
 	font-size: .9em;
 	}
+
+/* 모바일(768px 이하): 메뉴를 접어 MENU 버튼으로 열고, 가로 폭을 화면에 맞춘다 */
+@media (max-width: 768px) {
+	header {
+		padding: 0;
+		}
+
+	#top {
+		position: relative;
+		height: 56px;
+		line-height: 56px;
+		}
+
+	#menu_toggle {
+		display: block;
+		position: absolute;
+		top: 10px; right: 12px;
+		height: 36px;
+		padding: 0 14px;
+		border: 1px solid #aaa;
+		border-radius: 5px;
+		background-color: #fff;
+		font-size: 14px;
+		cursor: pointer;
+		}
+
+	/* 접힌 상태: 로그인 메뉴(#header_wrap)와 페이지 메뉴(nav)를 숨긴다 */
+	#header_wrap,
+	nav {
+		display: none;
+		}
+
+	body.menu_open #header_wrap,
+	body.menu_open nav {
+		display: block;
+		}
+
+	#header_wrap,
+	#nav_wrap {
+		width: auto; height: auto;
+		line-height: normal;
+		padding: 0 16px;
+		text-align: left;
+		}
+
+	nav {
+		padding: 0;
+		border-top: 0;
+		}
+
+	/* 손가락으로 누르기 쉽게 링크를 한 줄에 하나씩, 높이 44px 이상으로 */
+	#header_wrap a,
+	#nav_wrap a {
+		display: block;
+		min-height: 44px;
+		line-height: 44px;
+		margin-left: 0;
+		border-bottom: 1px solid #eee;
+		}
+
+	#footer_wrap {
+		width: auto; height: auto;
+		line-height: 1.6;
+		padding: 24px 16px;
+		}
+}

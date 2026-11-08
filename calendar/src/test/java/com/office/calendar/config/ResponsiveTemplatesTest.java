@@ -46,6 +46,27 @@ class ResponsiveTemplatesTest {
     }
 
     @Test
+    @DisplayName("공통 머리글에 MENU 버튼과 메뉴 스크립트가 있고, 링크 사이에 &nbsp; 빈 글자를 두지 않는다")
+    void headerHasMenuToggle() throws IOException {
+        String html = Files.readString(TEMPLATES.resolve("include/header_nav_footer.html"), StandardCharsets.UTF_8);
+        String withoutComments = html.replaceAll("(?s)<!--.*?-->", "");
+
+        assertThat(withoutComments).contains("id=\"menu_toggle\"").contains("aria-expanded=\"false\"").contains("@{/js/menu.js}");
+        assertThat(withoutComments).doesNotContain("&nbsp;");
+    }
+
+    @Test
+    @DisplayName("공통 스타일에 768px 이하 모바일 규칙과 메뉴 열림 규칙이 있다")
+    void commonCssHasMobileRules() throws IOException {
+        Path css = Paths.get("src/main/resources/static/css");
+        String header = Files.readString(css.resolve("header_nav_footer.css"), StandardCharsets.UTF_8);
+        String common = Files.readString(css.resolve("common.css"), StandardCharsets.UTF_8);
+
+        assertThat(header).contains("@media (max-width: 768px)").contains("body.menu_open #header_wrap").contains("body.menu_open nav");
+        assertThat(common).contains("@media (max-width: 768px)").contains("font-size: 16px");
+    }
+
+    @Test
     @DisplayName("viewport 메타는 <head> 안, charset 메타 다음에 있다")
     void viewportInsideHead() throws IOException {
         for (Path page : pages()) {

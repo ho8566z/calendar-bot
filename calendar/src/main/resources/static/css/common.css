@@ -25,3 +25,26 @@ input[type='reset'] {
 	width: 150px;
 	cursor: pointer;
 	}
+
+/* 모바일(768px 이하): 입력 칸이 화면 밖으로 나가지 않게 하고, 누르기 쉬운 크기로 키운다.
+   글자 크기를 16px 이상으로 두어 iOS 가 입력할 때 화면을 확대하지 않게 한다. */
+@media (max-width: 768px) {
+	input,
+	select,
+	button {
+		font-size: 16px;
+		}
+
+	input {
+		width: 100%;
+		max-width: 320px;
+		box-sizing: border-box;
+		}
+
+	input[type='button'],
+	input[type='reset'] {
+		width: 46%;
+		max-width: 150px;
+		min-height: 44px;
+		}
+}
