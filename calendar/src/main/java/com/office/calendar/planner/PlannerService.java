@@ -74,12 +74,21 @@ public class PlannerService {
 
     }
 
-    public Map<String, Object> getPlan(int no) {
+    // 일정 소유자 확인
+    public boolean isOwner(int no, String ownerId) {
+        log.info("isOwner()");
+
+        return plannerRepository.existsByPlanNoAndPlanOwnerId(no, ownerId);
+
+    }
+
+    // 일정 1건 조회: 요청한 사람의 일정이 아니면 없는 일정(null)으로 돌려준다
+    public Map<String, Object> getPlan(int no, String ownerId) {
         log.info("getPlan()");
 
         Map<String, Object> resultMap = new HashMap<>();
 
-        PlannerEntity plannerEntity = plannerRepository.findByPlanNo(no);
+        PlannerEntity plannerEntity = plannerRepository.findByPlanNoAndPlanOwnerId(no, ownerId);
 
         resultMap.put("plan", plannerEntity != null ? plannerEntity.toDto() : null);
 
@@ -87,13 +96,14 @@ public class PlannerService {
 
     }
 
+    // 일정 삭제: 요청한 사람의 일정만 지운다(남의 일정이면 0건)
     @Transactional
-    public Map<String, Object> removePlan(int no) {
+    public Map<String, Object> removePlan(int no, String ownerId) {
         log.info("removePlan()");
 
         Map<String, Object> resultMap = new HashMap<>();
 
-        int result = plannerRepository.deleteByPlanNo(no);
+        int result = plannerRepository.deleteByPlanNoAndPlanOwnerId(no, ownerId);
         if (result > PLAN_REMOVE_FAIL) {
             log.info("REMOVE PLAN SUCCESS!!");
 
@@ -108,15 +118,16 @@ public class PlannerService {
 
     }
 
+    // 일정 수정: 요청한 사람의 일정만 고친다(남의 일정이면 실패)
     @Transactional
-    public Map<String, Object> modifyPlan(PlannerDto plannerDto) {
+    public Map<String, Object> modifyPlan(PlannerDto plannerDto, String ownerId) {
         log.info("modifyPlan()");
 
         Map<String, Object> resultMap = new HashMap<>();
 
         int result = PLAN_MODIFY_FAIL;
 
-        PlannerEntity plannerEntity = plannerRepository.findByPlanNo(plannerDto.getNo());
+        PlannerEntity plannerEntity = plannerRepository.findByPlanNoAndPlanOwnerId(plannerDto.getNo(), ownerId);
         if (plannerEntity != null) {
             plannerEntity.setPlanYear(plannerDto.getYear());
             plannerEntity.setPlanMonth(plannerDto.getMonth());
