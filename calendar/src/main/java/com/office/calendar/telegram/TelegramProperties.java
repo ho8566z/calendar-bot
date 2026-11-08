@@ -13,6 +13,10 @@ public class TelegramProperties {
     // 봇 사용자명(@BotFather가 정한 이름): 영문·숫자·밑줄 5~32자
     private static final Pattern USERNAME = Pattern.compile("^[A-Za-z0-9_]{5,32}$");
 
+    // 봇 토큰은 요청 주소 경로에 그대로 들어가므로 주소에 안전한 문자(영문·숫자·콜론·밑줄·하이픈)만 허용한다.
+    // 이 밖의 문자(공백, 슬래시, 중괄호 등)가 있으면 잘못 설정된 것으로 보고 기능을 켜지 않는다.
+    private static final Pattern TOKEN = Pattern.compile("^[A-Za-z0-9:_-]+$");
+
     private final String botToken;
     private final String botUsername;
     private final int linkMinutes;
@@ -37,7 +41,12 @@ public class TelegramProperties {
 
     // 토큰과 사용자명이 모두 설정돼 연동·발송을 쓸 수 있는지
     public boolean isConfigured() {
-        return !botToken.isEmpty() && USERNAME.matcher(botUsername).matches();
+        return hasValidToken() && USERNAME.matcher(botUsername).matches();
+    }
+
+    // 토큰이 주소에 넣어도 안전한 형식인지(발송·폴링은 봇 이름 없이 토큰만 있으면 된다)
+    boolean hasValidToken() {
+        return TOKEN.matcher(botToken).matches();
     }
 
     // 토큰 값. 주소를 만드는 텔레그램 클라이언트만 쓴다

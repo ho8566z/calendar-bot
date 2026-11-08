@@ -19,6 +19,18 @@ class TelegramPropertiesTest {
     }
 
     @Test
+    @DisplayName("토큰에 주소에 안전하지 않은 문자(공백·슬래시·중괄호·물음표 등)가 있으면 설정되지 않은 것으로 본다")
+    void tokenFormat() {
+        assertThat(new TelegramProperties("123456:ABC-def_GHI", "MyCalBot", 10).isConfigured()).isTrue();
+        assertThat(new TelegramProperties("123456:ABC-def_GHI", "MyCalBot", 10).hasValidToken()).isTrue();
+
+        for (String bad : new String[]{"12 34:abc", "123/456:abc", "123:{token}", "123:abc?x=1", "123:abc#", "123:한글"}) {
+            assertThat(new TelegramProperties(bad, "MyCalBot", 10).hasValidToken()).as(bad).isFalse();
+            assertThat(new TelegramProperties(bad, "MyCalBot", 10).isConfigured()).as(bad).isFalse();
+        }
+    }
+
+    @Test
     @DisplayName("봇 이름은 앞의 @와 공백을 지우고, 형식이 틀리면(짧음·기호·공백 포함) 설정되지 않은 것으로 본다")
     void username() {
         assertThat(new TelegramProperties("t", " @MyCalBot ", 10).botUsername()).isEqualTo("MyCalBot");
