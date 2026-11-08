@@ -38,4 +38,49 @@
         LIMIT #{limit}
     </select>
 
+    <!-- 월별 통계(plan-010) 공통 부분.
+         offset: 그 달 1일의 요일 번호(일요일 0 ~ 토요일 6). DAYOFWEEK는 일요일이 1이라 1을 뺀다.
+         1일 날짜로만 요일을 구하므로 일정의 DATE가 그 달에 없는 값이어도 NULL이 생기지 않는다.
+         DATE가 1 ~ 그 달의 말일인 일정만 센다(없는 날짜로 저장된 일정은 통계에서 뺀다). -->
+    <sql id="firstDay">STR_TO_DATE(CONCAT(#{year}, '-', #{month}, '-01'), '%Y-%m-%d')</sql>
+
+    <sql id="statWhere">
+        p.OWNER_ID = #{ownerId}
+        AND p.`YEAR` = #{year}
+        AND p.`MONTH` = #{month}
+        AND p.`DATE` BETWEEN 1 AND DAY(LAST_DAY(<include refid="firstDay"/>))
+    </sql>
+
+    <!-- 요일별 일정 수: 요일 번호 = (1일의 요일 + 날짜 - 1) % 7 + 1 -->
+    <select id="countByWeekday"
+            resultType="com.office.calendar.planner.PlannerStatRow">
+        SELECT
+            MOD(DAYOFWEEK(<include refid="firstDay"/>) - 1 + p.`DATE` - 1, 7) + 1 AS bucket,
+            COUNT(*) AS cnt
+        FROM
+            PLAN p
+        WHERE
+            <include refid="statWhere"/>
+        GROUP BY
+            bucket
+        ORDER BY
+            bucket
+    </select>
+
+    <!-- 주별 일정 수: 주 번호 = (1일의 요일 + 날짜 - 1) / 7 의 몫 + 1 (화면 달력의 행과 같다) -->
+    <select id="countByWeek"
+            resultType="com.office.calendar.planner.PlannerStatRow">
+        SELECT
+            FLOOR((DAYOFWEEK(<include refid="firstDay"/>) - 1 + p.`DATE` - 1) / 7) + 1 AS bucket,
+            COUNT(*) AS cnt
+        FROM
+            PLAN p
+        WHERE
+            <include refid="statWhere"/>
+        GROUP BY
+            bucket
+        ORDER BY
+            bucket
+    </select>
+
 </mapper>

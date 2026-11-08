@@ -177,6 +177,42 @@ class PlannerControllerTest {
     }
 
     @Test
+    @DisplayName("통계: 로그인한 사람의 아이디로 조회한다")
+    void stats_usesPrincipal() throws Exception {
+        when(plannerService.getMonthlyStats(2026, 11, "alice")).thenReturn(Map.of("total", 3));
+
+        mockMvc.perform(get("/planner/stats/monthly").param("year", "2026").param("month", "11").param("owner_id", "bob")
+                        .with(user("alice").roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(3));
+
+        verify(plannerService).getMonthlyStats(2026, 11, "alice");
+    }
+
+    @Test
+    @DisplayName("통계: 범위(2025.1 ~ 2030.12) 밖이면 400 INVALID_PERIOD이고 조회하지 않는다")
+    void stats_outOfRange() throws Exception {
+        String[][] bad = {{"2024", "12"}, {"2031", "1"}, {"2026", "0"}, {"2026", "13"}};
+        for (String[] ym : bad) {
+            mockMvc.perform(get("/planner/stats/monthly").param("year", ym[0]).param("month", ym[1])
+                            .with(user("alice").roles("USER")))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value("INVALID_PERIOD"));
+        }
+
+        verify(plannerService, never()).getMonthlyStats(org.mockito.ArgumentMatchers.anyInt(), org.mockito.ArgumentMatchers.anyInt(), anyString());
+    }
+
+    @Test
+    @DisplayName("통계: year나 month가 빠지거나 숫자가 아니면 400")
+    void stats_badParams() throws Exception {
+        mockMvc.perform(get("/planner/stats/monthly").param("year", "2026").with(user("alice").roles("USER")))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(get("/planner/stats/monthly").param("year", "abc").param("month", "1").with(user("alice").roles("USER")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("검색: keyword 없이 호출해도 400이 아니라 200(빈 목록)")
     void search_withoutKeyword() throws Exception {
         when(plannerService.searchPlans(null, "alice")).thenReturn(Map.of("plans", java.util.List.of(), "limit", 100));

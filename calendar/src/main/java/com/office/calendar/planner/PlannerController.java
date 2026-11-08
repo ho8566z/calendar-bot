@@ -118,6 +118,26 @@ public class PlannerController {
 
     }
 
+    // 월별 통계: 본인 일정만. 범위(2025.1 ~ 2030.12) 밖이면 400
+    @GetMapping("/stats/monthly")
+    public ResponseEntity<Map<String, Object>> getMonthlyStats(
+            @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            Principal principal) {
+        log.info("getMonthlyStats()");
+
+        if (!PlannerService.isValidStatsPeriod(year, month)) {
+            Map<String, Object> errorMap = new HashMap<>();
+            errorMap.put("code", "INVALID_PERIOD");
+            errorMap.put("message", "통계는 2025년 1월부터 2030년 12월까지 조회할 수 있습니다.");
+            return ResponseEntity.badRequest().body(errorMap);
+
+        }
+
+        return ResponseEntity.ok(plannerService.getMonthlyStats(year, month, principal.getName()));
+
+    }
+
     // 일정 가져오기: 본인 일정이 아니면 없는 일정과 같은 404
     @GetMapping("/plan")
     public ResponseEntity<Map<String, Object>> getPlan(

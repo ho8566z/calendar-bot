@@ -1,6 +1,7 @@
 package com.office.calendar.planner.mapper;
 
 import com.office.calendar.planner.PlannerDto;
+import com.office.calendar.planner.PlannerStatRow;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,5 +16,15 @@ public interface PlannerMapper {
     List<PlannerDto> searchPlans(@Param("ownerId") String ownerId,
                                  @Param("keyword") String keyword,
                                  @Param("limit") int limit);
+
+    // ownerId의 year년 month월 일정 수를 요일별로 센다. bucket: 1(일요일) ~ 7(토요일). 일정이 없는 요일은 행이 없다.
+    List<PlannerStatRow> countByWeekday(@Param("ownerId") String ownerId,
+                                        @Param("year") int year,
+                                        @Param("month") int month);
+
+    // ownerId의 year년 month월 일정 수를 주(달력의 행, 일요일 시작)별로 센다. bucket: 1 ~ 6. 일정이 없는 주는 행이 없다.
+    List<PlannerStatRow> countByWeek(@Param("ownerId") String ownerId,
+                                     @Param("year") int year,
+                                     @Param("month") int month);
 
 }

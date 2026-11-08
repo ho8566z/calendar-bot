@@ -97,6 +97,56 @@ class PlannerMapperXmlTest {
         assertThat(sql).contains("TIME_FORMAT(p.START_TIME, '%H:%i') AS start_time");
     }
 
+    private String statSql(String statementId) {
+        MappedStatement statement = config.getMappedStatement(NAMESPACE + "." + statementId);
+        Map<String, Object> params = new HashMap<>();
+        params.put("ownerId", "alice");
+        params.put("year", 2026);
+        params.put("month", 11);
+        // <include> 자리 앞뒤에 공백이 생기므로 괄호 안쪽 공백은 없애고 비교한다
+        return statement.getBoundSql(params).getSql()
+                .replaceAll("\\s+", " ")
+                .replace("( ", "(")
+                .replace(" )", ")")
+                .trim();
+    }
+
+    @Test
+    @DisplayName("통계 쿼리는 모두 본인·년·월 조건으로 좁히고 그 달에 없는 날짜는 뺀다")
+    void stats_scopedToOwnerAndMonth() {
+        for (String id : new String[]{"countByWeekday", "countByWeek"}) {
+            String sql = statSql(id);
+
+            assertThat(sql).as(id).contains("p.OWNER_ID = ? AND p.`YEAR` = ? AND p.`MONTH` = ?");
+            assertThat(sql).as(id).contains("p.`DATE` BETWEEN 1 AND DAY(LAST_DAY(STR_TO_DATE(CONCAT(?, '-', ?, '-01'), '%Y-%m-%d')))");
+            assertThat(sql).as(id).contains("GROUP BY bucket ORDER BY bucket");
+        }
+    }
+
+    @Test
+    @DisplayName("요일은 1일의 요일에서 계산한 번호 1~7, 주는 같은 값에서 계산한 번호로 묶는다")
+    void stats_bucketExpressions() {
+        assertThat(statSql("countByWeekday"))
+                .contains("MOD(DAYOFWEEK(STR_TO_DATE(CONCAT(?, '-', ?, '-01'), '%Y-%m-%d')) - 1 + p.`DATE` - 1, 7) + 1 AS bucket");
+        assertThat(statSql("countByWeek"))
+                .contains("FLOOR((DAYOFWEEK(STR_TO_DATE(CONCAT(?, '-', ?, '-01'), '%Y-%m-%d')) - 1 + p.`DATE` - 1) / 7) + 1 AS bucket");
+    }
+
+    @Test
+    @DisplayName("통계 파라미터는 모두 바인딩이다(SQL에 값이 직접 들어가지 않음)")
+    void stats_bindParameters() {
+        MappedStatement statement = config.getMappedStatement(NAMESPACE + ".countByWeekday");
+        Map<String, Object> params = new HashMap<>();
+        params.put("ownerId", "x' OR '1'='1");
+        params.put("year", 2026);
+        params.put("month", 11);
+        BoundSql boundSql = statement.getBoundSql(params);
+
+        assertThat(boundSql.getSql()).doesNotContain("OR '1'='1");
+        assertThat(boundSql.getParameterMappings()).extracting(m -> m.getProperty())
+                .containsExactly("year", "month", "ownerId", "year", "month", "year", "month");
+    }
+
     @Test
     @DisplayName("매퍼 인터페이스의 모든 메서드에 같은 id의 SQL이 있다(id 오타 방지)")
     void everyMapperMethodHasStatement() {
