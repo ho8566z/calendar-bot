@@ -41,3 +41,6 @@ application-local.properties
 application-local.yml
 .env
 *.env
+
+### Application logs (log4j2가 calendar/logs 에 쓴다) ###
+logs/
