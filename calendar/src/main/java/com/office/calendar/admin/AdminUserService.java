@@ -1,6 +1,7 @@
 package com.office.calendar.admin;
 
 import com.office.calendar.admin.mapper.AdminUserMapper;
+import com.office.calendar.common.LikeKeyword;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,14 +46,7 @@ public class AdminUserService {
 
     // 검색어를 LIKE에 넣기 좋게 바꾼다: 비어 있으면 null(조건 없음), %·_ 는 문자로 취급하도록 '!'로 이스케이프
     static String toLikeKeyword(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            return null;
-        }
-
-        return keyword.trim()
-                .replace("!", "!!")
-                .replace("%", "!%")
-                .replace("_", "!_");
+        return LikeKeyword.toPattern(keyword);
 
     }
 
