@@ -84,6 +84,7 @@ class TelegramSchemaTest {
         assertThat(column(BriefLogEntity.class, "weekStart").name()).isEqualTo("WEEK_START");
         assertThat(column(BriefLogEntity.class, "result").name()).isEqualTo("RESULT");
         assertThat(column(BriefLogEntity.class, "result").length()).isEqualTo(10);
+        assertThat(column(BriefLogEntity.class, "result").columnDefinition()).as("MySQL ENUM 이 아니라 VARCHAR(10)").isEqualTo("VARCHAR(10)");
         assertThat(column(BriefLogEntity.class, "errorMsg").name()).isEqualTo("ERROR_MSG");
         assertThat(column(BriefLogEntity.class, "errorMsg").length()).isEqualTo(BriefLogEntity.ERROR_MSG_MAX).isEqualTo(255);
         assertThat(column(BriefLogEntity.class, "sentAt").nullable()).isTrue();

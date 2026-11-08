@@ -36,8 +36,10 @@ public class BriefLogEntity {
     @Column(name = "SENT_AT")
     private LocalDateTime sentAt;
 
+    // 문자열로 저장한다. columnDefinition 을 따로 두지 않으면 Hibernate 가 MySQL ENUM 컬럼으로 만들어,
+    // 결과 값을 추가할 때 ddl-auto=update 가 ENUM 값을 바꾸지 못해 INSERT 가 실패한다(명세서도 VARCHAR(10)).
     @Enumerated(EnumType.STRING)
-    @Column(name = "RESULT", nullable = false, length = 10)
+    @Column(name = "RESULT", nullable = false, length = 10, columnDefinition = "VARCHAR(10)")
     private BriefResult result;
 
     // 실패 사유. 봇 토큰·요청 URL·메시지 본문은 넣지 않는다
