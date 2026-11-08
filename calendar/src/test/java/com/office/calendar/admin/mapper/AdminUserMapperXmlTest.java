@@ -71,6 +71,17 @@ class AdminUserMapperXmlTest {
     }
 
     @Test
+    @DisplayName("매퍼 인터페이스의 모든 메서드에 같은 id의 SQL이 있다(id 오타 방지)")
+    void everyMapperMethodHasStatement() {
+        assertThat(config.hasMapper(AdminUserMapper.class)).isTrue();
+        for (java.lang.reflect.Method method : AdminUserMapper.class.getDeclaredMethods()) {
+            assertThat(config.hasStatement(NAMESPACE + "." + method.getName()))
+                    .as("SQL id: " + method.getName())
+                    .isTrue();
+        }
+    }
+
+    @Test
     @DisplayName("사용자 목록 쿼리는 비밀번호 컬럼(PW)을 조회하지 않는다")
     void select_doesNotReadPassword() {
         String sql = sql("selectUsers", "ali");
