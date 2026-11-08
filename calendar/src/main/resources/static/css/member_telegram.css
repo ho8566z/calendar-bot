@@ -1,0 +1,75 @@
+/* 내 정보 화면의 텔레그램 브리핑 영역 */
+#telegram {
+    max-width: 480px;
+    margin: 30px auto 0;
+    padding: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#telegram h3 {
+    margin: 0 0 10px;
+}
+
+#telegram p {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+#telegram[hidden],
+#telegram [hidden] {
+    display: none;
+}
+
+#telegram .tg_message {
+    min-height: 22px;
+    font-size: 14px;
+}
+
+#telegram .tg_message.ok {
+    color: #1a7f37;
+}
+
+#telegram .tg_message.error {
+    color: #c62828;
+}
+
+#telegram button {
+    padding: 6px 14px;
+    margin: 4px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+#telegram button:disabled {
+    cursor: wait;
+    opacity: 0.5;
+}
+
+#telegram #tg_pending {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border-radius: 6px;
+}
+
+#telegram #tg_link_anchor {
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-all;
+    font-size: 14px;
+}
+
+#telegram label {
+    display: block;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+#telegram label input {
+    width: auto;
+    margin-right: 6px;
+}
