@@ -4,6 +4,9 @@ let current_month;          // 현재 월
 let current_date;           // 현재 일
 let current_day;            // 현재 요일
 
+let last_search_keyword = '';   // 마지막으로 검색한 검색어(일정을 고치거나 지운 뒤 결과를 다시 불러오는 데 쓴다)
+let search_seq = 0;             // 검색 요청 번호(늦게 도착한 이전 응답이 새 결과를 덮어쓰지 않게 한다)
+
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOCUMENT READY!!');
 
@@ -180,6 +183,7 @@ function initEvents() {
 
             let title = document.querySelector('#write_plan input[name="p_title"]').value;      // 제목
             let body = document.querySelector('#write_plan input[name="p_body"]').value;        // 내용
+            let startTime = document.querySelector('#write_plan input[name="p_time"]').value;    // 시작 시간(선택)
 
             if (title === '') {
                 alert('INPUT NEW PLAN TITLE!!');
@@ -198,7 +202,7 @@ function initEvents() {
 
                 // 비동기 방식으로 서버에 전송
                 // 이미지는 선택이므로 고르지 않았으면 null
-                fetchWritePlan(year, month, date, title, body, files.length > 0 ? files[0] : null);
+                fetchWritePlan(year, month, date, title, body, startTime, files.length > 0 ? files[0] : null);
 
             }
 
@@ -207,6 +211,38 @@ function initEvents() {
         // 일정 디테일 모달 보이기
         if (event.target.matches('#table_calender a.title')) {
             console.log('PLAN TITLE CLICKED!!', event.target.getAttribute('data-no'));
+
+            fetchGetPlan(event.target.getAttribute('data-no'));
+
+        }
+
+        // 월별 통계 링크 클릭 시: 지금 보고 있는 년·월로 통계를 연다
+        if (event.target.matches('#section_wrap a.btn_stats')) {
+            let base = event.target.getAttribute('href').split('?')[0];
+            event.target.setAttribute('href', `${base}?year=${current_year}&month=${current_month + 1}`);
+
+        }
+
+        // 일정 검색 버튼 클릭 시
+        if (event.target.matches('#section_wrap .search_wrap input[value="SEARCH"]')) {
+            console.log('SEARCH BUTTON CLICKED!!');
+
+            searchPlansByInput();
+
+        }
+
+        // 검색 결과 지우기 버튼 클릭 시
+        if (event.target.matches('#section_wrap .search_wrap input[value="CLEAR"]')) {
+            console.log('CLEAR BUTTON CLICKED!!');
+
+            document.querySelector('#section_wrap input[name="s_keyword"]').value = '';
+            clearSearchResult();
+
+        }
+
+        // 검색 결과에서 일정 제목 클릭 시: 달력의 일정과 같은 상세 모달을 연다
+        if (event.target.matches('#search_result a.title')) {
+            console.log('SEARCH RESULT CLICKED!!', event.target.getAttribute('data-no'));
 
             fetchGetPlan(event.target.getAttribute('data-no'));
 
@@ -246,11 +282,24 @@ function initEvents() {
 
             let title = document.querySelector('#show_plan input[name="p_title"]').value;
             let body = document.querySelector('#show_plan input[name="p_body"]').value;
+            let startTime = document.querySelector('#show_plan input[name="p_time"]').value;
 
             let fileInput = document.querySelector('#show_plan input[name="p_file"]');
             let file = fileInput.files.length > 0 ? fileInput.files[0] : null;
 
-            fetchModifyPlan(no, year, month, date, title, body, file);
+            fetchModifyPlan(no, year, month, date, title, body, startTime, file);
+
+        }
+
+    });
+
+    // 검색어 입력칸에서 Enter 를 누르면 검색
+    document.addEventListener('keydown', function (event) {
+
+        if (event.key === 'Enter' && event.target.matches('#section_wrap input[name="s_keyword"]')) {
+            event.preventDefault();
+
+            searchPlansByInput();
 
         }
 
@@ -314,6 +363,74 @@ function initEvents() {
         }
 
     });
+}
+
+// 입력칸의 검색어로 검색한다. 비어 있으면 요청하지 않고 안내만 한다.
+function searchPlansByInput() {
+    console.log('searchPlansByInput() CALLED!!');
+
+    let keyword = document.querySelector('#section_wrap input[name="s_keyword"]').value.trim();
+    if (keyword === '') {
+        clearSearchResult();
+        document.querySelector('#search_result .search_msg').textContent = '검색어를 입력하세요.';
+        return;
+
+    }
+
+    fetchSearchPlans(keyword);
+
+}
+
+// 검색 결과 영역 비우기(진행 중이던 검색 응답도 무시한다)
+function clearSearchResult() {
+    console.log('clearSearchResult() CALLED!!');
+
+    last_search_keyword = '';
+    search_seq++;
+
+    document.querySelector('#search_result .search_msg').textContent = '';
+    document.querySelector('#search_result ul.search_list').innerHTML = '';
+
+}
+
+// 검색 결과 그리기. 제목·내용은 textContent 로 넣어 HTML 로 해석되지 않게 한다.
+function showSearchResult(plans, limit) {
+    console.log('showSearchResult() CALLED!!');
+
+    let msg = document.querySelector('#search_result .search_msg');
+    let list = document.querySelector('#search_result ul.search_list');
+    list.innerHTML = '';
+
+    if (plans.length === 0) {
+        msg.textContent = '검색 결과가 없습니다.';
+        return;
+
+    }
+
+    msg.textContent = plans.length >= limit
+            ? `검색 결과 ${plans.length}건 (최대 ${limit}건까지 표시합니다)`
+            : `검색 결과 ${plans.length}건`;
+
+    plans.forEach(plan => {
+        let pad = n => String(n).padStart(2, '0');
+        let li = document.createElement('li');
+
+        let dateSpan = document.createElement('span');
+        dateSpan.className = 'search_date';
+        dateSpan.textContent = `${plan.year}-${pad(plan.month)}-${pad(plan.date)}` + (plan.start_time ? ` ${plan.start_time}` : '');
+
+        let link = document.createElement('a');
+        link.className = 'title';
+        link.href = '#none';
+        link.dataset.no = plan.no;
+        link.textContent = plan.title;
+
+        li.appendChild(dateSpan);
+        li.appendChild(link);
+        list.appendChild(li);
+
+    });
+
 }
 
 function setPreMonth() {
@@ -453,6 +570,7 @@ function hideWritePlanView() {
 
     document.querySelector('#write_plan input[name="p_title"]').value = '';
     document.querySelector('#write_plan input[name="p_body"]').value = '';
+    document.querySelector('#write_plan input[name="p_time"]').value = '';
     document.querySelector('#write_plan input[name="p_file"]').value = '';
 
     document.querySelector('#write_plan').style.display = 'none';
@@ -496,6 +614,7 @@ function showDetailPlanView(plan) {
 
     showPlan.querySelector('input[name="p_title"]').value = plan.title;
     showPlan.querySelector('input[name="p_body"]').value = plan.body;
+    showPlan.querySelector('input[name="p_time"]').value = plan.start_time || '';
 
     // 이미지는 선택이라 없을 수 있다. 없으면 이미지 영역을 숨긴다.
     let planImg = showPlan.querySelector('img.plan_img');
@@ -524,6 +643,7 @@ function hideDetailPlanView() {
 
     showPlan.querySelector('input[name="p_title"]').value = '';
     showPlan.querySelector('input[name="p_body"]').value = '';
+    showPlan.querySelector('input[name="p_time"]').value = '';
     showPlan.querySelector('input[name="p_file"]').value = '';
     showPlan.querySelector('img.plan_img').removeAttribute('src');
 

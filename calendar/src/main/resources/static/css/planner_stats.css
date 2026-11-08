@@ -1,0 +1,139 @@
+section {
+    width: 100%;
+    padding: 30px 0;
+}
+
+#section_wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+#section_wrap .word {
+    text-align: center;
+    font-weight: bolder;
+    margin: 20px 0;
+}
+
+#section_wrap .content {
+    text-align: center;
+}
+
+/* 년·월 선택 */
+#section_wrap .select_wrap {
+    margin: 10px auto 20px;
+}
+
+#section_wrap .select_wrap select {
+    width: 90px;
+    padding: 5px;
+    margin: 3px;
+    border: 1px solid #ccc;
+}
+
+#section_wrap .select_wrap button {
+    padding: 4px 14px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+#section_wrap .select_wrap button:disabled {
+    cursor: default;
+    opacity: 0.4;
+}
+
+/* 처리 결과·오류 안내 */
+#section_wrap .message {
+    min-height: 22px;
+    margin: 8px 0;
+    font-size: 14px;
+    color: #c62828;
+}
+
+/* 요약 */
+#section_wrap .summary {
+    margin: 10px 0 20px;
+    line-height: 1.8;
+}
+
+#section_wrap .summary .total b {
+    font-size: 22px;
+}
+
+#section_wrap .summary .busiest {
+    color: #444;
+    font-size: 14px;
+}
+
+#section_wrap h3 {
+    margin: 22px 0 8px;
+    text-align: left;
+}
+
+/* 표 */
+#section_wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#section_wrap table tr th {
+    border: 1px solid #ccc;
+    background-color: #f2f2f2;
+    padding: 6px 4px;
+}
+
+#section_wrap table tr td {
+    border: 1px solid #ccc;
+    padding: 5px 8px;
+    font-size: 14px;
+}
+
+#section_wrap table tr td.label,
+#section_wrap table tr td.range,
+#section_wrap table tr td.count {
+    width: 90px;
+    text-align: center;
+}
+
+#section_wrap table tr td.range {
+    width: 140px;
+}
+
+/* 일요일은 붉게, 토요일은 푸르게 (달력과 같은 색) */
+#section_wrap #weekday_rows tr:first-child td.label {
+    background-color: #fff5f5;
+}
+
+#section_wrap #weekday_rows tr:last-child td.label {
+    background-color: #e8fdff;
+}
+
+/* 가장 많은 주 강조 */
+#section_wrap #week_rows tr.busiest td {
+    background-color: #fff8e1;
+    font-weight: bold;
+}
+
+/* 막대: 가장 큰 값을 100%로 둔 비율 */
+#section_wrap .bar {
+    height: 14px;
+    background-color: #f2f2f2;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+#section_wrap .bar span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background-color: #4eccae;
+}
+
+#section_wrap .hint {
+    margin-top: 24px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.8;
+}

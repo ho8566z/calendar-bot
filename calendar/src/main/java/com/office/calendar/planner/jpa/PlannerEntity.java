@@ -7,7 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.office.calendar.planner.util.StartTimes;
+
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Data
@@ -50,6 +53,10 @@ public class PlannerEntity {
     @Column(name = "IMG_NAME")
     private String planImgName;
 
+    // 시작 시간(선택). 없으면 NULL
+    @Column(name = "START_TIME")
+    private LocalTime planStartTime;
+
     @Column(name = "REG_DATE")
     private LocalDateTime planRegDate;
 
@@ -82,6 +89,7 @@ public class PlannerEntity {
                 .title(planTitle)
                 .body(planBody)
                 .img_name(planImgName)
+                .start_time(StartTimes.format(planStartTime))
                 .reg_date(planRegDate != null ? planRegDate.format(formatter) : null)
                 .mod_date(planModDate != null ? planModDate.format(formatter) : null)
                 .build();

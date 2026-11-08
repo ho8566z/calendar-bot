@@ -42,6 +42,65 @@ section {
 }
 /* YEAR MONTH SELECT END */
 
+/* STATS LINK */
+#section_wrap .stats_link {
+	margin: 0 auto 10px;
+	text-align: center;
+}
+
+#section_wrap .stats_link a.btn_stats {
+	display: inline-block;
+	padding: 4px 14px;
+	border: 1px solid #aaa;
+	border-radius: 4px;
+	color: #333;
+}
+
+/* SEARCH START */
+#section_wrap .search_wrap {
+	width: 500px;
+	margin: 0 auto 10px;
+	text-align: center;
+}
+
+#section_wrap .search_wrap input[type='text'] {
+	width: 300px;
+	padding: 8px;
+	border: 1px solid #ccc;
+}
+
+#section_wrap .search_wrap input[type='button'] {
+	padding: 8px 12px;
+}
+
+#search_result {
+	width: 700px;
+	margin: 0 auto 20px;
+	text-align: left;
+}
+
+#search_result .search_msg {
+	color: #666;
+	text-align: center;
+	margin: 5px 0;
+}
+
+#search_result .search_msg:empty {
+	display: none;
+}
+
+#search_result ul.search_list li {
+	padding: 6px 4px;
+	border-bottom: 1px dashed #ccc;
+}
+
+#search_result ul.search_list li .search_date {
+	display: inline-block;
+	min-width: 130px;
+	color: #666;
+}
+/* SEARCH END */
+
 /* CALENDER START */
 #section_wrap .calender_wrap {
 	width: 1400px;
