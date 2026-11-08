@@ -7,7 +7,9 @@ async function fetchWritePlan(year, month, date, title, body, file) {
     formData.append("date", date);
     formData.append("title", title);
     formData.append("body", body);
-    formData.append("file", file);
+    if (file) {
+        formData.append("file", file);
+    }
 
     try {
         let response = await fetch('/planner/plan', {
