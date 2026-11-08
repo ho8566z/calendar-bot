@@ -45,7 +45,7 @@ public class TelegramProperties {
     }
 
     // 토큰이 주소에 넣어도 안전한 형식인지(발송·폴링은 봇 이름 없이 토큰만 있으면 된다)
-    boolean hasValidToken() {
+    public boolean hasValidToken() {
         return TOKEN.matcher(botToken).matches();
     }
 
