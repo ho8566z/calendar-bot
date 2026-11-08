@@ -22,12 +22,12 @@
         </span>
         -->
 
-        <th:block sec:authorize="!hasAnyRole('PRE_USER', 'USER')">
+        <th:block sec:authorize="!hasAnyRole('PRE_USER', 'USER', 'ADMIN')">
             <a th:href="@{/member/signup}">sign-up</a> &nbsp;&nbsp;
             <a th:href="@{/member/signin}">sign-in</a> &nbsp;&nbsp;
         </th:block>
 
-        <th:block sec:authorize="hasAnyRole('PRE_USER', 'USER')">
+        <th:block sec:authorize="hasAnyRole('PRE_USER', 'USER', 'ADMIN')">
             <a th:href="@{/member/modify}">modify</a> &nbsp;&nbsp;
             <a th:href="@{/member/signout_confirm}">signout</a> &nbsp;&nbsp;
         </th:block>
@@ -37,7 +37,7 @@
 
 <nav th:fragment="nav">
     <div id="nav_wrap">
-        <a th:href="@{/planner}">planner</a>
+        <a th:href="@{/planner}" sec:authorize="!hasRole('ADMIN')">planner</a>
     </div>
 </nav>
 
