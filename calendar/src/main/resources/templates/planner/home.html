@@ -95,6 +95,16 @@
                 </table>
             </div>
 
+            <!-- 선택한 날짜의 일정 목록: 모바일 폭에서만 보인다(좁은 칸에는 제목 대신 개수만 표시하기 때문) -->
+            <div id="day_list">
+                <div class="day_list_head">
+                    <span id="day_list_title"></span>
+                    <button type="button" id="day_list_add">+ 일정 추가</button>
+                </div>
+                <p id="day_list_empty"></p>
+                <ul id="day_list_items"></ul>
+            </div>
+
             <!-- 일정 등록 모달 -->
             <div id="write_plan">
                 <div class="write_plan_wrap">

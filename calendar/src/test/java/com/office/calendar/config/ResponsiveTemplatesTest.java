@@ -67,6 +67,27 @@ class ResponsiveTemplatesTest {
     }
 
     @Test
+    @DisplayName("달력 화면에 날짜별 일정 목록 패널이 있고, CSS 는 PC에서 숨기고 모바일에서만 보이며 칸에는 개수만 보인다")
+    void calendarMobileLayout() throws IOException {
+        String html = Files.readString(TEMPLATES.resolve("planner/home.html"), StandardCharsets.UTF_8);
+        String css = Files.readString(Paths.get("src/main/resources/static/css/planner.css"), StandardCharsets.UTF_8);
+        int mobileStart = css.indexOf("@media (max-width: 768px)");
+
+        assertThat(html).contains("id=\"day_list\"").contains("id=\"day_list_title\"").contains("id=\"day_list_items\"").contains("id=\"day_list_add\"");
+        assertThat(mobileStart).isGreaterThan(0);
+
+        // PC 폭: 패널은 숨김. 모바일 규칙은 미디어 쿼리 안에서만 보이게 한다
+        String desktopPart = css.substring(0, mobileStart);
+        String mobilePart = css.substring(mobileStart);
+        assertThat(desktopPart).containsPattern("#day_list\\s*\\{\\s*display:\\s*none;");
+        assertThat(mobilePart).containsPattern("#day_list\\s*\\{\\s*display:\\s*block;");
+
+        // 모바일 폭: 제목 목록은 숨기고 data-count 개수를 보여 주며 고정 폭 1400px 을 풀어 준다
+        assertThat(mobilePart).contains("ul.plan").contains("data-count").contains("attr(data-count)").contains("table-layout: fixed");
+        assertThat(mobilePart).containsPattern("#section_wrap\\s*\\{\\s*width:\\s*auto;");
+    }
+
+    @Test
     @DisplayName("viewport 메타는 <head> 안, charset 메타 다음에 있다")
     void viewportInsideHead() throws IOException {
         for (Path page : pages()) {
