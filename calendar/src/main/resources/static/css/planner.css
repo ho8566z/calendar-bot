@@ -350,3 +350,225 @@ section {
 	width: 120px;
 }
 /* SHOW PLAN END */
+
+/* DAY LIST START: 선택한 날짜의 일정 목록. PC 폭에서는 칸 안에 제목이 보이므로 숨긴다 */
+#day_list {
+	display: none;
+}
+/* DAY LIST END */
+
+/* MOBILE START: 768px 이하 */
+@media (max-width: 768px) {
+	#section_wrap {
+		width: auto;
+		padding: 0 8px;
+	}
+
+	/* 년·월 선택: 화면 폭에 맞추고 이전/다음 버튼은 누르기 쉽게 */
+	#section_wrap .select_wrap {
+		width: auto;
+		max-width: 500px;
+		padding: 6px 10px;
+		margin: 12px auto;
+		border-radius: 30px;
+		/* 이전/다음 버튼과 선택 상자 두 개가 줄바꿈 없이 한 줄에 들어오게 한다 */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: nowrap;
+	}
+
+	#section_wrap .select_wrap select {
+		width: 72px;
+		margin: 2px;
+		flex: 0 0 auto;
+	}
+
+	#section_wrap .select_wrap a {
+		display: inline-block;
+		flex: 0 0 auto;
+		min-width: 44px;
+		line-height: 44px;
+		text-align: center;
+		white-space: nowrap;
+	}
+
+	/* 달력: 칸을 좁히고 일정 제목 대신 개수만 보여 준다 */
+	#table_calender {
+		table-layout: fixed;
+	}
+
+	#table_calender tr th {
+		padding: 4px 0;
+		font-size: 12px;
+		overflow: hidden;
+	}
+
+	#table_calender tr td {
+		width: auto;
+		height: 64px;
+		padding: 2px;
+		font-size: 13px;
+		text-align: center;
+		cursor: pointer;
+	}
+
+	#table_calender tr td.selected {
+		outline: 2px solid #4eccae;
+		outline-offset: -2px;
+		background-color: #f1fbf8;
+	}
+
+	/* write 링크는 작은 + 버튼으로 */
+	#table_calender tr td a.write {
+		display: inline-block;
+		width: 26px; height: 26px;
+		padding: 0;
+		line-height: 26px;
+		text-align: center;
+		font-size: 0;
+	}
+
+	#table_calender tr td a.write::before {
+		content: '+';
+		font-size: 16px;
+	}
+
+	/* 일정 제목 목록은 숨기고, 일정이 있는 날은 ● 개수 */
+	#table_calender tr td ul.plan {
+		display: none;
+	}
+
+	#table_calender tr td .plan_wrap[data-count]::after {
+		content: '● ' attr(data-count);
+		display: block;
+		font-size: 11px;
+		color: #2a9d84;
+	}
+
+	/* 선택한 날짜의 일정 목록 */
+	#day_list {
+		display: block;
+		margin: 12px 0;
+		padding: 10px;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		text-align: left;
+	}
+
+	#day_list .day_list_head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-weight: bold;
+	}
+
+	#day_list_add {
+		min-height: 36px;
+		padding: 0 12px;
+		border: 1px solid #aaa;
+		border-radius: 5px;
+		background-color: #fff;
+		cursor: pointer;
+	}
+
+	#day_list_add[hidden] {
+		display: none;
+	}
+
+	#day_list_empty {
+		margin: 8px 0;
+		color: #666;
+		font-size: 14px;
+	}
+
+	#day_list_empty:empty {
+		display: none;
+	}
+
+	#day_list_items li {
+		border-top: 1px dashed #ccc;
+	}
+
+	#day_list_items li a.title {
+		display: block;
+		min-height: 44px;
+		line-height: 44px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+/* MOBILE END */
+
+/* MOBILE MODAL START: 등록·상세 모달과 검색. PC 규칙이 id 선택자라 같은 선택자로 덮어쓴다 */
+@media (max-width: 768px) {
+	/* 모달은 화면 전체 크기로 열고, 내용이 길면 스크롤한다 */
+	#write_plan,
+	#show_plan {
+		overflow-y: auto;
+		background-color: #fff;
+	}
+
+	#write_plan .write_plan_wrap,
+	#show_plan .show_plan_wrap {
+		width: auto;
+		min-height: 100%;
+		margin: 0;
+		padding: 20px 12px;
+		border: 0;
+		border-radius: 0;
+		box-sizing: border-box;
+	}
+
+	/* 입력 칸은 세로로 나열하고 폭을 화면에 맞춘다 */
+	#write_plan .write_plan_wrap input,
+	#show_plan .show_plan_wrap input,
+	#write_plan .write_plan_wrap input[type='file'],
+	#show_plan .show_plan_wrap input[type='file'] {
+		width: 100%;
+		max-width: 360px;
+		box-sizing: border-box;
+	}
+
+	#write_plan .write_plan_wrap input[type='button'],
+	#write_plan .write_plan_wrap input[type='reset'],
+	#show_plan .show_plan_wrap input[type='button'] {
+		width: 30%;
+		max-width: 120px;
+		min-height: 44px;
+	}
+
+	#show_plan .show_plan_wrap ul {
+		overflow: visible;
+	}
+
+	#show_plan .show_plan_wrap ul li.detail {
+		float: none;
+		width: auto;
+		padding: 0;
+	}
+
+	#show_plan .show_plan_wrap img.plan_img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* 검색 */
+	#section_wrap .search_wrap {
+		width: auto;
+		max-width: 500px;
+	}
+
+	#section_wrap .search_wrap input[type='text'] {
+		width: 100%;
+		max-width: 360px;
+		box-sizing: border-box;
+	}
+
+	#search_result {
+		width: auto;
+		padding: 0 4px;
+	}
+}
+/* MOBILE MODAL END */

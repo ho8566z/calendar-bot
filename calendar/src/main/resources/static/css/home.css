@@ -17,3 +17,20 @@ section {
 #section_wrap .content img {
 	max-width: 1000px;
 	}
+
+/* 모바일(768px 이하): 고정 폭 1000px 을 풀고 이미지가 화면 폭을 넘지 않게 한다 */
+@media (max-width: 768px) {
+	section {
+		padding: 16px 0;
+		}
+
+	#section_wrap {
+		width: auto;
+		padding: 0 16px;
+		}
+
+	#section_wrap .content img {
+		max-width: 100%;
+		height: auto;
+		}
+}

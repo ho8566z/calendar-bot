@@ -37,3 +37,20 @@ section {
 	margin: 50px 0;
 }
 /* OTHER END */
+
+/* 모바일(768px 이하): 고정 폭 1000px 을 풀어 가로 스크롤이 생기지 않게 한다 */
+@media (max-width: 768px) {
+	section {
+		padding: 16px 0;
+	}
+
+	#section_wrap {
+		width: auto;
+		padding: 0 16px;
+	}
+
+	#section_wrap .other {
+		margin: 30px 0;
+		line-height: 2;
+	}
+}

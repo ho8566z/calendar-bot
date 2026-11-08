@@ -137,3 +137,31 @@ section {
     color: #666;
     line-height: 1.8;
 }
+
+
+/* 모바일(768px 이하): 표 열의 고정 폭을 풀어 화면 안에 들어오게 한다 */
+@media (max-width: 768px) {
+    section {
+        padding: 16px 0;
+    }
+
+    #section_wrap table tr td {
+        padding: 5px 4px;
+        font-size: 13px;
+    }
+
+    #section_wrap table tr td.label,
+    #section_wrap table tr td.range,
+    #section_wrap table tr td.count {
+        width: auto;
+        white-space: nowrap;
+    }
+
+    #section_wrap .bar {
+        min-width: 40px;
+    }
+
+    #section_wrap .select_wrap select {
+        width: 84px;
+    }
+}

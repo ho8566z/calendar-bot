@@ -7,6 +7,9 @@ let current_day;            // 현재 요일
 let last_search_keyword = '';   // 마지막으로 검색한 검색어(일정을 고치거나 지운 뒤 결과를 다시 불러오는 데 쓴다)
 let search_seq = 0;             // 검색 요청 번호(늦게 도착한 이전 응답이 새 결과를 덮어쓰지 않게 한다)
 
+let month_plans = [];           // 지금 보고 있는 달의 일정(서버가 준 순서). 모바일의 날짜별 목록이 쓴다
+let selected_date = null;       // 모바일에서 선택한 날짜(일). 없으면 null
+
 document.addEventListener('DOMContentLoaded', function () {
     console.log('DOCUMENT READY!!');
 
@@ -25,6 +28,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 현재 (<tr> UI)
     addCalenderTr();
+
+    // 처음에는 오늘을 선택해 둔다(모바일에서 바로 오늘 일정이 보이게)
+    selected_date = today_date;
 
     // 해당 년/월 일정들 가져오기
     fetchGetCurrentMonthPlans();
@@ -138,6 +144,31 @@ function initEvents() {
 
     // click 이벤트 들 처리
     document.addEventListener('click', function (event) {
+
+        // 달력 칸에서 링크가 아닌 곳을 누르면 그 날짜를 선택한다(목록 패널은 모바일 폭에서만 보인다)
+        let cell = event.target.closest ? event.target.closest('#table_calender td') : null;
+        if (cell && !event.target.closest('a')) {
+            let dateDiv = cell.querySelector('div.date');
+            if (dateDiv) {
+                selectDay(parseInt(dateDiv.textContent.trim(), 10));
+            }
+        }
+
+        // 선택한 날짜의 일정 제목을 누르면 상세 화면을 연다
+        if (event.target.matches('#day_list a.title')) {
+            console.log('DAY LIST PLAN CLICKED!!', event.target.getAttribute('data-no'));
+
+            fetchGetPlan(event.target.getAttribute('data-no'));
+
+        }
+
+        // 선택한 날짜에 일정 추가
+        if (event.target.matches('#day_list_add') && selected_date !== null) {
+            console.log('DAY LIST ADD CLICKED!!');
+
+            showWritePlanView(current_year, current_month + 1, selected_date);
+
+        }
 
         // 이전달 에서 이벤트 발생 시
         if (event.target.matches('#section_wrap .btn_pre')) {
@@ -365,6 +396,68 @@ function initEvents() {
     });
 }
 
+// 날짜를 선택하고 그날 일정 목록을 보여 준다
+function selectDay(date) {
+    selected_date = date;
+    renderDayList();
+
+}
+
+// 다른 달로 옮길 때: 선택과 이전 달 일정을 지운다(새 달의 일정이 도착하기 전에 이전 달 목록이 보이지 않게)
+function resetDaySelection() {
+    selected_date = null;
+    month_plans = [];
+    renderDayList();
+
+}
+
+// 선택한 날짜의 일정 목록 패널과 달력 칸의 선택 표시를 그린다. 제목은 textContent 로 넣는다.
+function renderDayList() {
+    let title = document.getElementById('day_list_title');
+    let empty = document.getElementById('day_list_empty');
+    let items = document.getElementById('day_list_items');
+    let addButton = document.getElementById('day_list_add');
+    if (!title || !empty || !items || !addButton) {
+        return;
+    }
+
+    items.innerHTML = '';
+
+    // 달력 칸의 선택 표시
+    document.querySelectorAll('#table_calender td').forEach(td => {
+        let dateDiv = td.querySelector('div.date');
+        let isSelected = selected_date !== null && dateDiv && parseInt(dateDiv.textContent.trim(), 10) === selected_date;
+        td.classList.toggle('selected', !!isSelected);
+    });
+
+    if (selected_date === null) {
+        title.textContent = '';
+        empty.textContent = '날짜를 누르면 그날의 일정을 볼 수 있어요.';
+        addButton.hidden = true;
+        return;
+    }
+
+    let dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+    let day = new Date(current_year, current_month, selected_date).getDay();
+    title.textContent = `${current_month + 1}월 ${selected_date}일 (${dayNames[day]})`;
+    addButton.hidden = false;
+
+    let plans = month_plans.filter(plan => plan.date === selected_date);
+    empty.textContent = plans.length === 0 ? '이 날은 일정이 없습니다.' : '';
+
+    plans.forEach(plan => {
+        let li = document.createElement('li');
+        let link = document.createElement('a');
+        link.className = 'title';
+        link.href = '#none';
+        link.dataset.no = plan.no;
+        link.textContent = (plan.start_time ? plan.start_time + ' ' : '') + plan.title;
+        li.appendChild(link);
+        items.appendChild(li);
+    });
+
+}
+
 // 입력칸의 검색어로 검색한다. 비어 있으면 요청하지 않고 안내만 한다.
 function searchPlansByInput() {
     console.log('searchPlansByInput() CALLED!!');
@@ -465,6 +558,9 @@ function setPreMonth() {
     // UI(<select>) 렌더링
     setCurrentYearAndMonthSelectUI();
 
+    // 다른 달로 옮기면 선택한 날짜를 지운다
+    resetDaySelection();
+
     //  UI(<tr>) 제거
     removeCalenderTr();
 
@@ -508,6 +604,9 @@ function setNextMonth() {
     // UI(<select>) 렌더링
     setCurrentYearAndMonthSelectUI();
 
+    // 다른 달로 옮기면 선택한 날짜를 지운다
+    resetDaySelection();
+
     //  UI(<tr>) 제거
     removeCalenderTr();
 
@@ -542,6 +641,9 @@ function setMonthBySelectChanged() {
         seletedCalender.getDate(),
         seletedCalender.getDay()
     );
+
+    // 다른 달로 옮기면 선택한 날짜를 지운다
+    resetDaySelection();
 
     // 달력 UI 렌더링
     removeCalenderTr();

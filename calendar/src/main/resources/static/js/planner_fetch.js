@@ -54,6 +54,9 @@ async function fetchWritePlan(year, month, date, title, body, startTime, file) {
 async function fetchGetCurrentMonthPlans() {
     console.log('fetchGetCurrentMonthPlans() CALLED!!');
 
+    let requestedYear = current_year;
+    let requestedMonth = current_month;
+
     let reqData = {
         "year": current_year,
         "month": current_month + 1
@@ -79,10 +82,20 @@ async function fetchGetCurrentMonthPlans() {
         let data = await response.json();
         console.log('data: ', data);
 
+        // 달을 빠르게 넘기면 이전 달의 응답이 늦게 도착할 수 있다. 지금 보는 달의 응답이 아니면 버린다.
+        if (requestedYear !== current_year || requestedMonth !== current_month) {
+            return;
+        }
+
         let plans = data.plans;
+        month_plans = plans;
         plans.forEach(dto => {
             let targetElement = document.querySelector(`#date_${dto.date} ul.plan`);
             if (targetElement) {
+                // 모바일 폭에서는 제목 대신 개수만 보여 준다(CSS 가 data-count 를 읽는다)
+                let wrap = targetElement.parentElement;
+                wrap.dataset.count = String((parseInt(wrap.dataset.count || '0', 10)) + 1);
+
                 // 시작 시간이 있으면 제목 앞에 'HH:mm '을 붙인다. 제목은 textContent로 넣어 HTML로 해석되지 않게 한다.
                 let li = document.createElement('li');
                 let link = document.createElement('a');
@@ -95,6 +108,9 @@ async function fetchGetCurrentMonthPlans() {
             }
 
         });
+
+        // 모바일에서 선택해 둔 날짜의 일정 목록을 새 데이터로 다시 그린다
+        renderDayList();
 
     } catch (error) {
         console.log('fetchGetCurrentMonthPlans() COMMUNICATION ERROR!! ', error);
