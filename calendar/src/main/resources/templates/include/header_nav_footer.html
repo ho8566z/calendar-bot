@@ -38,6 +38,7 @@
 <nav th:fragment="nav">
     <div id="nav_wrap">
         <a th:href="@{/planner}" sec:authorize="!hasRole('ADMIN')">planner</a>
+        <a th:href="@{/admin/users}" sec:authorize="hasRole('ADMIN')">admin</a>
     </div>
 </nav>
 
