@@ -31,20 +31,30 @@ public class PlannerController {
 
     }
 
+    // 일정 등록: 폼에서 받는 값은 화면에서 입력하는 항목(년·월·일·제목·내용)만 쓴다.
+    // 번호·소유자·이미지 이름 같은 값은 클라이언트가 보내도 무시한다(번호를 보내 남의 일정을 덮어쓰는 것을 막음).
     @PostMapping("/plan")
     public ResponseEntity<Map<String, Object>> writePlan(
-            PlannerDto plannerDto,
+            PlannerDto form,
             @RequestParam("file") MultipartFile file,
             Principal principal) {
         log.info("writePlan()");
 
         String signInedMemberID = principal.getName();
 
+        PlannerDto plannerDto = PlannerDto.builder()
+                .owner_id(signInedMemberID)
+                .year(form.getYear())
+                .month(form.getMonth())
+                .date(form.getDate())
+                .title(form.getTitle())
+                .body(form.getBody())
+                .build();
+
         // SAVE FILE
         String savedFileName = uploadFileService.upload(signInedMemberID, file);
         if (savedFileName != null) {
             plannerDto.setImg_name(savedFileName);
-            plannerDto.setOwner_id(signInedMemberID);
 
             Map<String, Object> resultMap = plannerService.writePlan(plannerDto);
             return ResponseEntity.ok(resultMap);    // 200 OK
@@ -107,11 +117,12 @@ public class PlannerController {
 
     }
 
-    // 일정 수정하기: 본인 일정이 아니면 404(파일 업로드 전에 먼저 확인)
+    // 일정 수정하기: 본인 일정이 아니면 404(파일 업로드 전에 먼저 확인).
+    // 폼에서 받는 값은 일정 번호(경로)와 년·월·일·제목·내용만 쓰고, 이미지 이름은 서버가 저장한 것만 쓴다.
     @PutMapping("/plan/{no}")
     public ResponseEntity<Map<String, Object>> modifyPlan(
             @PathVariable("no") int no,
-            PlannerDto plannerDto,
+            PlannerDto form,
             @RequestParam(value = "file", required = false) MultipartFile file,
             Principal principal
     ) {
@@ -123,12 +134,19 @@ public class PlannerController {
 
         }
 
-        plannerDto.setNo(no);
+        PlannerDto plannerDto = PlannerDto.builder()
+                .no(no)
+                .year(form.getYear())
+                .month(form.getMonth())
+                .date(form.getDate())
+                .title(form.getTitle())
+                .body(form.getBody())
+                .build();
+
         if (file != null) {
             String savedFileName = uploadFileService.upload(signInedMemberID, file);
             if (savedFileName != null) {
                 plannerDto.setImg_name(savedFileName);
-                plannerDto.setOri_owner_id(signInedMemberID);
 
             } else {
                 Map<String, Object> errorMap = new HashMap<>();
