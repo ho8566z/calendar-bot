@@ -42,6 +42,20 @@ section {
 }
 /* YEAR MONTH SELECT END */
 
+/* STATS LINK */
+#section_wrap .stats_link {
+	margin: 0 auto 10px;
+	text-align: center;
+}
+
+#section_wrap .stats_link a.btn_stats {
+	display: inline-block;
+	padding: 4px 14px;
+	border: 1px solid #aaa;
+	border-radius: 4px;
+	color: #333;
+}
+
 /* SEARCH START */
 #section_wrap .search_wrap {
 	width: 500px;

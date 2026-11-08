@@ -118,6 +118,15 @@ public class PlannerController {
 
     }
 
+    // 월별 통계 화면(데이터는 아래 /stats/monthly 로 불러온다)
+    @GetMapping("/stats")
+    public String stats() {
+        log.info("stats()");
+
+        return "planner/stats";
+
+    }
+
     // 월별 통계: 본인 일정만. 범위(2025.1 ~ 2030.12) 밖이면 400
     @GetMapping("/stats/monthly")
     public ResponseEntity<Map<String, Object>> getMonthlyStats(

@@ -216,6 +216,13 @@ function initEvents() {
 
         }
 
+        // 월별 통계 링크 클릭 시: 지금 보고 있는 년·월로 통계를 연다
+        if (event.target.matches('#section_wrap a.btn_stats')) {
+            let base = event.target.getAttribute('href').split('?')[0];
+            event.target.setAttribute('href', `${base}?year=${current_year}&month=${current_month + 1}`);
+
+        }
+
         // 일정 검색 버튼 클릭 시
         if (event.target.matches('#section_wrap .search_wrap input[value="SEARCH"]')) {
             console.log('SEARCH BUTTON CLICKED!!');

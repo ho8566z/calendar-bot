@@ -190,6 +190,22 @@ class PlannerControllerTest {
     }
 
     @Test
+    @DisplayName("통계 화면: USER는 열리고, 로그인 전은 로그인으로, 승인 전(PRE_USER)은 접근 거부 화면으로 보낸다")
+    void statsPage_access() throws Exception {
+        mockMvc.perform(get("/planner/stats").with(user("alice").roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl("planner/stats"));
+
+        mockMvc.perform(get("/planner/stats")).andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(get("/planner/stats").with(user("pre").roles("PRE_USER")))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl("/member/access_denied"));
+        mockMvc.perform(get("/planner/stats/monthly").param("year", "2026").param("month", "11").with(user("pre").roles("PRE_USER")))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl("/member/access_denied"));
+        verify(plannerService, never()).getMonthlyStats(org.mockito.ArgumentMatchers.anyInt(), org.mockito.ArgumentMatchers.anyInt(), anyString());
+    }
+
+    @Test
     @DisplayName("통계: 범위(2025.1 ~ 2030.12) 밖이면 400 INVALID_PERIOD이고 조회하지 않는다")
     void stats_outOfRange() throws Exception {
         String[][] bad = {{"2024", "12"}, {"2031", "1"}, {"2026", "0"}, {"2026", "13"}};
