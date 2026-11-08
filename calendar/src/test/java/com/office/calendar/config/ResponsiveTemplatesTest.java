@@ -85,6 +85,9 @@ class ResponsiveTemplatesTest {
         // 모바일 폭: 제목 목록은 숨기고 data-count 개수를 보여 주며 고정 폭 1400px 을 풀어 준다
         assertThat(mobilePart).contains("ul.plan").contains("data-count").contains("attr(data-count)").contains("table-layout: fixed");
         assertThat(mobilePart).containsPattern("#section_wrap\\s*\\{\\s*width:\\s*auto;");
+
+        // 년·월 선택(이전/다음 버튼 + 선택 상자 2개)이 좁은 폭에서 줄바꿈되지 않고 한 줄에 들어간다(실제 브라우저 375px 확인에서 발견)
+        assertThat(mobilePart).contains("flex-wrap: nowrap").contains("width: 72px");
     }
 
     @Test
