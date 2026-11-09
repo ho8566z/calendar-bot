@@ -127,6 +127,16 @@ class ResponsiveTemplatesTest {
     }
 
     @Test
+    @DisplayName("홈 화면의 이미지는 home.css 의 '#section_wrap .content img' 규칙이 적용되도록 class=\"content\" 안에 있다(없으면 모바일에서 이미지가 화면 밖으로 넘친다)")
+    void homeImageIsInsideContent() throws IOException {
+        String html = Files.readString(TEMPLATES.resolve("home.html"), StandardCharsets.UTF_8);
+        String css = Files.readString(Paths.get("src/main/resources/static/css/home.css"), StandardCharsets.UTF_8);
+
+        assertThat(css).contains("#section_wrap .content img").contains("max-width: 100%");
+        assertThat(html).containsPattern("(?s)<div class=\"content\">\\s*<img ");
+    }
+
+    @Test
     @DisplayName("viewport 메타는 <head> 안, charset 메타 다음에 있다")
     void viewportInsideHead() throws IOException {
         for (Path page : pages()) {
