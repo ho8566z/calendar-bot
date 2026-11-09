@@ -3,6 +3,7 @@ package com.office.calendar.member;
 import jakarta.persistence.GeneratedValue;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +22,13 @@ public class MemberController {
 
     final private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    // 로그인 잠금 안내 문구에 보여 줄 잠금 시간(분)
+    final private int lockMinutes;
+
+    public MemberController(MemberService memberService,
+                            @Value("${login.lock-minutes:10}") int lockMinutes) {
         this.memberService = memberService;
+        this.lockMinutes = lockMinutes;
     }
 
     // 회원가입 양식
@@ -114,12 +120,13 @@ public class MemberController {
 
     // 계정 수정 확인(/member/modify_confirm)
     @PostMapping("/modify_confirm")
-    public String modifyConfirm(MemberDto memberDto, Model model) {
+    public String modifyConfirm(MemberDto memberDto, Principal principal, Model model) {
         System.out.println(CLASS_NAME.concat("modifyConfirm()"));
 
         String nextPage = "member/modify_result";
 
-        int result = memberService.modifyConfirm(memberDto);
+        // 수정 대상은 폼 값이 아니라 로그인한 본인으로 정한다
+        int result = memberService.modifyConfirm(memberDto, principal.getName());
         model.addAttribute("result", result);
 
         return nextPage;
@@ -155,11 +162,15 @@ public class MemberController {
     @GetMapping("/signin_result")
     public String signinResult(
             @RequestParam(value = "loginedID", required = false) String loginedID,
+            @RequestParam(value = "locked", required = false) String locked,
             Model model) {
         log.info(CLASS_NAME.concat("signinResult()"));
 
         String nextPage = "member/signin_result";
         model.addAttribute("loginedID", loginedID);
+        // 잠금 안내는 로그인 실패 화면에서만 보여 준다(성공 주소에 locked를 붙여도 성공으로 바뀌지 않게 loginedID가 우선)
+        model.addAttribute("locked", loginedID == null && "true".equals(locked));
+        model.addAttribute("lockMinutes", lockMinutes);
 
         return nextPage;
     }

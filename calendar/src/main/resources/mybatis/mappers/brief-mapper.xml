@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.office.calendar.brief.mapper.BriefMapper">
+
+    <!-- 브리핑 대상: 수신을 켜고(BRIEF_YN) 텔레그램이 연동된(TELEGRAM_CHAT_ID) USER.
+         그 주에 이미 처리한 회원(BRIEF_LOG에 같은 MEMBER_NO, WEEK_START 행이 있음)은 뺀다.
+         비밀번호 등 다른 컬럼은 조회하지 않는다. -->
+    <select id="selectTargets"
+            resultType="com.office.calendar.brief.BriefTarget">
+        SELECT
+            m.NO AS memberNo,
+            m.ID AS memberId,
+            m.TELEGRAM_CHAT_ID AS chatId
+        FROM
+            USER_MEMBER m
+            JOIN USER_AUTHORITY a ON m.AUTHORITY_NO = a.NO
+        WHERE
+            m.BRIEF_YN = 1
+            AND m.TELEGRAM_CHAT_ID IS NOT NULL
+            AND a.ROLE_NAME = 'USER'
+            AND NOT EXISTS (
+                SELECT 1
+                FROM BRIEF_LOG l
+                WHERE l.MEMBER_NO = m.NO
+                  AND l.WEEK_START = #{weekStart}
+            )
+        ORDER BY
+            m.NO
+    </select>
+
+    <!-- 주간 일정: 년·월·일이 정수 3개로 나뉘어 있어 yyyymmdd 정수로 합쳐 범위를 비교한다(월·연도를 넘는 주도 한 번에).
+         DATE, YEAR, MONTH는 예약어와 겹치기 쉬워 백틱을 쓴다. 시작 시간은 HH:mm 문자열로 가져온다. -->
+    <select id="selectPlans"
+            resultType="com.office.calendar.brief.BriefPlanRow">
+        SELECT
+            p.`YEAR` AS `year`,
+            p.`MONTH` AS `month`,
+            p.`DATE` AS `date`,
+            p.TITLE AS title,
+            TIME_FORMAT(p.START_TIME, '%H:%i') AS startTime
+        FROM
+            PLAN p
+        WHERE
+            p.OWNER_ID = #{ownerId}
+            AND (p.`YEAR` * 10000 + p.`MONTH` * 100 + p.`DATE`) BETWEEN #{fromKey} AND #{toKey}
+        ORDER BY
+            p.`YEAR`, p.`MONTH`, p.`DATE`,
+            (p.START_TIME IS NULL) ASC, p.START_TIME ASC,
+            p.NO ASC
+    </select>
+
+</mapper>

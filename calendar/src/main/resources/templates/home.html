@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:replace="~{include/title::title}"/>
 
     <link rel="stylesheet" th:href="@{/css/common.css}">
@@ -19,10 +21,20 @@
 <section>
     <div id="section_wrap">
         <div class="word">
-            HOME
+            일정을 기록하고,<br>다음 주를 미리 받아보세요
         </div>
-        <div>
-            <img th:src="@{/img/intro.png}">
+        <p class="lead">내 일정만 안전하게 관리하고, 매주 일요일 저녁 텔레그램으로 브리핑을 받습니다.</p>
+        <div class="cta">
+            <th:block sec:authorize="!hasAnyRole('PRE_USER', 'USER', 'ADMIN')">
+                <a th:href="@{/member/signin}">로그인</a>
+                <a class="ghost" th:href="@{/member/signup}">회원가입</a>
+            </th:block>
+            <th:block sec:authorize="hasRole('USER')">
+                <a th:href="@{/planner}">내 달력 열기</a>
+            </th:block>
+        </div>
+        <div class="content">
+            <img th:src="@{/img/intro.jpg}" alt="플래너 위에 놓인 스마트폰">
         </div>
     </div>
 </section>

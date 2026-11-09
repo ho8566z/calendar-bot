@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
-@Table(name = "USER_MEMBER", uniqueConstraints = {@UniqueConstraint(columnNames = "ID")})
+@Table(name = "USER_MEMBER", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "ID"),
+        @UniqueConstraint(columnNames = "TELEGRAM_CHAT_ID")})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,6 +47,14 @@ public class MemberEntity {
     @JoinColumn(name = "AUTHORITY_NO")
     private AuthorityEntity authorityEntity;
 
+    // 텔레그램 chat ID(brf-005). 연동 전·해제 후에는 NULL이고, 한 chat ID는 한 계정에만 연결된다.
+    @Column(name = "TELEGRAM_CHAT_ID")
+    private Long telegramChatId;
+
+    // 주간 브리핑 수신 여부(brf-003). 기본 끔이며 텔레그램이 연동된 회원만 켤 수 있다(서비스 규칙).
+    @Column(name = "BRIEF_YN", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
+    private boolean briefYn;
+
     @Column(name = "REG_DATE", updatable = false)
     private LocalDateTime memRegDate;
 
@@ -54,7 +64,10 @@ public class MemberEntity {
     @PrePersist
     protected void onCreate() {
 //        this.memAuthorityNo = 1;
-        this.authorityEntity = new AuthorityEntity((byte) 1, "PRE_USER");
+        // 권한이 정해지지 않은 새 회원만 PRE_USER로 시작한다(관리자 시드처럼 미리 정한 권한은 그대로 둔다)
+        if (this.authorityEntity == null) {
+            this.authorityEntity = new AuthorityEntity((byte) 1, "PRE_USER");
+        }
         this.memRegDate = LocalDateTime.now();
         this.memModDate = LocalDateTime.now();
     }

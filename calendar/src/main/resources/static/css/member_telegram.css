@@ -1,0 +1,91 @@
+/* 내 정보 화면의 텔레그램 브리핑 영역 */
+#telegram {
+    max-width: 440px;
+    margin: 22px auto 0;
+    padding: 24px 22px;
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+#telegram h3 {
+    margin: 0 0 10px;
+    font-size: 17px;
+}
+
+#telegram p {
+    margin: 8px 0;
+    line-height: 1.6;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+#telegram[hidden],
+#telegram [hidden] {
+    display: none;
+}
+
+#telegram .tg_message {
+    min-height: 22px;
+    font-size: 14px;
+}
+
+#telegram .tg_message.ok {
+    color: var(--ok);
+}
+
+#telegram .tg_message.error {
+    color: var(--danger);
+}
+
+#telegram button {
+    padding: 9px 16px;
+    margin: 4px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background-color: var(--surface);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#telegram #tg_link_btn {
+    border: 0;
+    background-color: var(--primary);
+    color: #fff;
+}
+
+#telegram #tg_link_btn:hover:not(:disabled) {
+    background-color: var(--primary-dark);
+}
+
+#telegram button:disabled {
+    cursor: wait;
+    opacity: 0.5;
+}
+
+#telegram #tg_pending {
+    margin-top: 10px;
+    padding: 12px;
+    background-color: var(--primary-soft);
+    border-radius: var(--radius-sm);
+}
+
+#telegram #tg_link_anchor {
+    display: inline-block;
+    max-width: 100%;
+    word-break: break-all;
+    font-size: 14px;
+}
+
+#telegram label {
+    display: block;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+#telegram label input {
+    width: auto;
+    margin-right: 6px;
+}

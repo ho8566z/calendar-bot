@@ -1,49 +1,181 @@
+/* 상단 바: 위 줄에는 로고(왼쪽)와 로그인 메뉴(오른쪽), 아래 줄에는 페이지 메뉴 */
 header {
 	width: 100%;
-	padding: 7px 0;
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	background-color: rgba(255, 255, 255, .92);
+	backdrop-filter: saturate(180%) blur(10px);
+	border-bottom: 1px solid var(--line);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	padding: 0 max(20px, calc((100% - 1200px) / 2));
 	}
 
 #top {
-	height: 70px;
-	line-height: 70px;
-	border-bottom: 1px solid #ccc;
-	text-align: center;
-	background-color: #ededed;
+	height: 64px;
+	display: flex;
+	align-items: center;
+	}
+
+#top h3 {
+	font-size: 18px;
+	font-weight: 800;
+	letter-spacing: .04em;
+	color: var(--ink);
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	}
+
+/* 로고 표시: 작은 달력 모양 */
+#top h3::before {
+	content: '';
+	width: 22px; height: 22px;
+	border-radius: 7px;
+	background:
+		linear-gradient(var(--surface), var(--surface)) 5px 9px / 12px 2px no-repeat,
+		linear-gradient(var(--surface), var(--surface)) 5px 14px / 8px 2px no-repeat,
+		var(--primary);
 	}
 
 #header_wrap {
-	width: 1000px; height: 40px;
-	line-height: 40px;
-	margin: 0 auto;
-	text-align: right;
+	display: flex;
+	align-items: center;
+	gap: 4px;
 	}
 
+#header_wrap a,
+#nav_wrap a {
+	display: inline-block;
+	padding: 7px 14px;
+	border-radius: 999px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--muted);
+	transition: background-color .15s, color .15s;
+	}
+
+#header_wrap a:hover,
+#nav_wrap a:hover {
+	background-color: var(--primary-soft);
+	color: var(--primary);
+	}
+
+/* 메뉴 버튼은 모바일 폭에서만 보인다 */
+#menu_toggle {
+	display: none;
+	}
+
+/* nav 는 header 와 같은 높이의 형제 요소라 같은 좌우 여백을 따로 준다 */
 nav {
 	width: 100%;
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #ccc;
-	padding: 10px 0;
+	padding: 0 max(20px, calc((100% - 1200px) / 2));
+	background-color: var(--surface);
+	border-bottom: 1px solid var(--line);
 	}
 
 #nav_wrap {
-	width: 1000px; height: 50px;
-	line-height: 50px;
-	margin: 0 auto;
-	text-align: right;
+	display: flex;
+	gap: 4px;
+	padding: 8px 0;
 	}
-	
+
+#nav_wrap a {
+	color: var(--primary);
+	background-color: var(--primary-soft);
+	}
+
 footer {
 	width: 100%;
-	border-top: 1px solid #ccc;
-	padding: 10px 0;
-	background-color: #363636;
+	margin-top: 40px;
+	border-top: 1px solid var(--line);
+	background-color: var(--surface);
 	}
 
 #footer_wrap {
-	width: 1000px; height: 100px;
-	line-height: 100px;
-	color: #fafafa;
+	max-width: 1200px;
 	margin: 0 auto;
+	padding: 28px 20px;
+	color: var(--muted);
 	text-align: center;
-	font-size: .9em;
+	font-size: 13px;
 	}
+
+/* 모바일(768px 이하): 메뉴를 접어 MENU 버튼으로 열고, 가로 폭을 화면에 맞춘다 */
+@media (max-width: 768px) {
+	header {
+		padding: 0 16px;
+		}
+
+	#top {
+		flex: 1;
+		height: 56px;
+		}
+
+	#top h3 {
+		font-size: 16px;
+		}
+
+	#menu_toggle {
+		display: block;
+		height: 38px;
+		padding: 0 16px;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background-color: var(--surface);
+		color: var(--ink);
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		}
+
+	/* 접힌 상태: 로그인 메뉴(#header_wrap)와 페이지 메뉴(nav)를 숨긴다 */
+	#header_wrap,
+	nav {
+		display: none;
+		}
+
+	body.menu_open #header_wrap,
+	body.menu_open nav {
+		display: block;
+		}
+
+	#header_wrap,
+	#nav_wrap {
+		width: 100%;
+		padding: 0;
+		}
+
+	body.menu_open #header_wrap {
+		order: 2;
+		flex: 0 0 100%;
+		padding-top: 4px;
+		}
+
+	nav {
+		padding: 0 16px 10px;
+		border-top: 0;
+		}
+
+	#nav_wrap {
+		display: block;
+		}
+
+	/* 손가락으로 누르기 쉽게 링크를 한 줄에 하나씩, 높이 44px 이상으로 */
+	#header_wrap a,
+	#nav_wrap a {
+		display: block;
+		min-height: 44px;
+		line-height: 28px;
+		margin: 2px 0;
+		padding: 8px 14px;
+		border-radius: var(--radius-sm);
+		}
+
+	#footer_wrap {
+		padding: 24px 16px;
+		}
+}

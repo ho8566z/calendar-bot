@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.office.calendar.admin.mapper.AdminUserMapper">
+
+    <!-- 검색 조건: keyword가 있을 때만 아이디에 포함된 회원으로 좁힌다.
+         LIKE의 와일드카드(%, _)는 서비스에서 '!'로 이스케이프해서 넘기므로 ESCAPE '!'를 쓴다. -->
+    <sql id="userSearchCondition">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                m.ID LIKE CONCAT('%', #{keyword}, '%') ESCAPE '!'
+            </if>
+        </where>
+    </sql>
+
+    <!-- 사용자 목록: 비밀번호(PW)는 조회하지 않는다 -->
+    <select id="selectUsers"
+            resultType="com.office.calendar.admin.AdminUserDto">
+        SELECT
+            m.NO AS no,
+            m.ID AS id,
+            m.MAIL AS mail,
+            m.PHONE AS phone,
+            a.ROLE_NAME AS role,
+            DATE_FORMAT(m.REG_DATE, '%Y-%m-%d %H:%i:%s') AS reg_date,
+            DATE_FORMAT(m.MOD_DATE, '%Y-%m-%d %H:%i:%s') AS mod_date
+        FROM
+            USER_MEMBER m
+            LEFT JOIN USER_AUTHORITY a ON m.AUTHORITY_NO = a.NO
+        <include refid="userSearchCondition"/>
+        ORDER BY
+            m.REG_DATE DESC, m.NO DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countUsers"
+            resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            USER_MEMBER m
+        <include refid="userSearchCondition"/>
+    </select>
+
+</mapper>

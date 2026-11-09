@@ -1,19 +1,95 @@
 section {
 	width: 100%;
-	padding: 30px 0;
+	padding: 40px 0 10px;
 	}
 
 #section_wrap {
-	width: 1000px;
+	max-width: 960px;
 	margin: 0 auto;
+	padding: 0 20px;
 	}
 
+/* 소개 문구 */
 #section_wrap .word {
-	text-align: center;
-	font-weight: bolder;
-	margin: 20px 0;
+	margin: 8px 0 10px;
+	font-size: 34px;
+	line-height: 1.25;
+	letter-spacing: -.02em;
 	}
 
-#section_wrap .content img {
-	max-width: 1000px;
+#section_wrap .lead {
+	text-align: center;
+	color: var(--muted);
+	font-size: 17px;
+	margin-bottom: 22px;
 	}
+
+#section_wrap .cta {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-bottom: 34px;
+	}
+
+#section_wrap .cta a {
+	display: inline-block;
+	padding: 12px 26px;
+	border-radius: 999px;
+	font-weight: 700;
+	background-color: var(--primary);
+	color: #fff;
+	box-shadow: 0 6px 16px rgba(79, 70, 229, .28);
+	transition: transform .15s, background-color .15s;
+	}
+
+#section_wrap .cta a:hover {
+	background-color: var(--primary-dark);
+	transform: translateY(-1px);
+	}
+
+#section_wrap .cta a.ghost {
+	background-color: var(--surface);
+	color: var(--ink);
+	box-shadow: none;
+	border: 1px solid var(--line);
+	}
+
+#section_wrap .cta a.ghost:hover {
+	background-color: var(--primary-soft);
+	}
+
+/* 대표 이미지 */
+#section_wrap .content img {
+	display: block;
+	width: 100%;
+	max-width: 960px;
+	height: auto;
+	border-radius: 20px;
+	box-shadow: var(--shadow);
+	}
+
+/* 모바일(768px 이하): 고정 폭을 풀고 이미지가 화면 폭을 넘지 않게 한다 */
+@media (max-width: 768px) {
+	section {
+		padding: 20px 0 0;
+		}
+
+	#section_wrap {
+		width: auto;
+		padding: 0 16px;
+		}
+
+	#section_wrap .word {
+		font-size: 26px;
+		}
+
+	#section_wrap .lead {
+		font-size: 15px;
+		}
+
+	#section_wrap .content img {
+		max-width: 100%;
+		height: auto;
+		border-radius: 14px;
+		}
+}

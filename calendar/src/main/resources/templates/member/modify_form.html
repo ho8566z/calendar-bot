@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:replace="~{include/title::title}"/>
 
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/header_nav_footer.css}">
     <link rel="stylesheet" th:href="@{/css/member.css}">
+    <link rel="stylesheet" th:href="@{/css/member_telegram.css}">
 
     <script th:src="@{/js/member.js}"></script>
+    <script th:src="@{/js/member_telegram.js}" defer></script>
 
 </head>
 <body>
@@ -39,6 +43,37 @@
                 <input type="reset" value="reset">
 
             </form>
+
+            <!-- 텔레그램 주간 브리핑(USER만): 연동하면 매주 일요일 저녁에 다음 주 일정을 텔레그램으로 보내 준다 -->
+            <div id="telegram" class="telegram" sec:authorize="hasRole('USER')">
+                <h3>TELEGRAM BRIEF</h3>
+
+                <p id="tg_message" class="tg_message" role="status"></p>
+
+                <!-- 연동 전 -->
+                <div id="tg_unlinked" hidden>
+                    <p>텔레그램을 연동하면 매주 일요일 저녁에 다음 주 일정을 보내 드려요.</p>
+                    <button type="button" id="tg_link_btn">텔레그램 연동하기</button>
+
+                    <div id="tg_pending" hidden>
+                        <p>아래 링크를 눌러 텔레그램에서 <b>시작(START)</b> 버튼을 눌러 주세요. (10분 안에)</p>
+                        <a id="tg_link_anchor" target="_blank" rel="noopener noreferrer"></a>
+                    </div>
+                </div>
+
+                <!-- 연동 후 -->
+                <div id="tg_linked" hidden>
+                    <p>텔레그램이 연동되어 있습니다.</p>
+                    <label>
+                        <input type="checkbox" id="tg_brief_toggle">
+                        주간 브리핑 받기 (매주 일요일 21:00, 다음 주 일정)
+                    </label>
+                    <div class="tg_buttons">
+                        <button type="button" id="tg_send_btn">지금 보내기 (다음 주 미리보기)</button>
+                        <button type="button" id="tg_unlink_btn">연동 해제</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>

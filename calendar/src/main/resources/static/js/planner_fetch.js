@@ -1,4 +1,4 @@
-async function fetchWritePlan(year, month, date, title, body, file) {
+async function fetchWritePlan(year, month, date, title, body, startTime, file) {
     console.log('fetchWritePlan() CALLED!!');
 
     let formData = new FormData();
@@ -7,7 +7,10 @@ async function fetchWritePlan(year, month, date, title, body, file) {
     formData.append("date", date);
     formData.append("title", title);
     formData.append("body", body);
-    formData.append("file", file);
+    formData.append("start_time", startTime || '');       // 비어 있으면 시간 없음
+    if (file) {
+        formData.append("file", file);
+    }
 
     try {
         let response = await fetch('/planner/plan', {
@@ -32,6 +35,7 @@ async function fetchWritePlan(year, month, date, title, body, file) {
             removeCalenderTr();     // 기존 달력(<tr>) 제거
             addCalenderTr();        // 새 달력(<tr>) 생성
             fetchGetCurrentMonthPlans(); // 일정들 가져오는 함수
+            refreshSearchResult();
 
         }
 
@@ -49,6 +53,9 @@ async function fetchWritePlan(year, month, date, title, body, file) {
 
 async function fetchGetCurrentMonthPlans() {
     console.log('fetchGetCurrentMonthPlans() CALLED!!');
+
+    let requestedYear = current_year;
+    let requestedMonth = current_month;
 
     let reqData = {
         "year": current_year,
@@ -75,20 +82,90 @@ async function fetchGetCurrentMonthPlans() {
         let data = await response.json();
         console.log('data: ', data);
 
+        // 달을 빠르게 넘기면 이전 달의 응답이 늦게 도착할 수 있다. 지금 보는 달의 응답이 아니면 버린다.
+        if (requestedYear !== current_year || requestedMonth !== current_month) {
+            return;
+        }
+
         let plans = data.plans;
+        month_plans = plans;
         plans.forEach(dto => {
-            let appendTag = `<li><a class="title" href="#none" data-no="${dto.no}">${dto.title}</a></li>`;
             let targetElement = document.querySelector(`#date_${dto.date} ul.plan`);
-            // targetElement.appendChild(appendTag);
             if (targetElement) {
-                targetElement.insertAdjacentHTML('beforeend', appendTag);
+                // 모바일 폭에서는 제목 대신 개수만 보여 준다(CSS 가 data-count 를 읽는다)
+                let wrap = targetElement.parentElement;
+                wrap.dataset.count = String((parseInt(wrap.dataset.count || '0', 10)) + 1);
+
+                // 시작 시간이 있으면 제목 앞에 'HH:mm '을 붙인다. 제목은 textContent로 넣어 HTML로 해석되지 않게 한다.
+                let li = document.createElement('li');
+                let link = document.createElement('a');
+                link.className = 'title';
+                link.href = '#none';
+                link.dataset.no = dto.no;
+                link.textContent = (dto.start_time ? dto.start_time + ' ' : '') + dto.title;
+                li.appendChild(link);
+                targetElement.appendChild(li);
             }
 
         });
 
+        // 모바일에서 선택해 둔 날짜의 일정 목록을 새 데이터로 다시 그린다
+        renderDayList();
+
     } catch (error) {
         console.log('fetchGetCurrentMonthPlans() COMMUNICATION ERROR!! ', error);
 
+    }
+
+}
+
+// 일정 검색(본인 일정만). 응답이 늦게 와도 가장 최근에 요청한 검색의 결과만 보여 준다.
+async function fetchSearchPlans(keyword) {
+    console.log('fetchSearchPlans() CALLED!!');
+
+    last_search_keyword = keyword;
+    let seq = ++search_seq;
+
+    let queryString = new URLSearchParams({"keyword": keyword}).toString();
+
+    try {
+        let response = await fetch(`/planner/plans/search?${queryString}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log('fetchSearchPlans() COMMUNICATION SUCCESS!! ');
+
+        let data = await response.json();
+
+        if (seq !== search_seq) {
+            return;     // 더 최근에 요청한 검색이 있다
+        }
+
+        showSearchResult(data.plans, data.limit);
+
+    } catch (error) {
+        console.log('fetchSearchPlans() COMMUNICATION ERROR!! ', error);
+
+        if (seq === search_seq) {
+            document.querySelector('#search_result ul.search_list').innerHTML = '';
+            document.querySelector('#search_result .search_msg').textContent = '검색에 문제가 발생했습니다.';
+        }
+
+    }
+
+}
+
+// 검색 결과가 떠 있으면 같은 검색어로 다시 불러온다(일정을 등록·수정·삭제한 뒤 목록이 낡지 않게)
+function refreshSearchResult() {
+    if (last_search_keyword !== '') {
+        fetchSearchPlans(last_search_keyword);
     }
 
 }
@@ -152,6 +229,7 @@ async function fetchRemovePlan(no) {
             removeCalenderTr();
             addCalenderTr();
             fetchGetCurrentMonthPlans();
+            refreshSearchResult();
 
         } else {
             alert("일정이 정상적으로 삭제 되지 않았습니다.");
@@ -168,7 +246,7 @@ async function fetchRemovePlan(no) {
 
 }
 
-async function fetchModifyPlan(no, year, month, date, title, body, file) {
+async function fetchModifyPlan(no, year, month, date, title, body, startTime, file) {
     console.log('fetchModifyPlan() CALLED!!');
 
     let formData = new FormData();
@@ -177,6 +255,7 @@ async function fetchModifyPlan(no, year, month, date, title, body, file) {
     formData.append('date', date);
     formData.append('title', title);
     formData.append('body', body);
+    formData.append('start_time', startTime || '');         // 비우면 서버가 시간을 지운다
 
     if (file != null || file != undefined) {
         formData.append('file', file);
@@ -208,6 +287,7 @@ async function fetchModifyPlan(no, year, month, date, title, body, file) {
         removeCalenderTr();
         addCalenderTr();
         fetchGetCurrentMonthPlans();
+        refreshSearchResult();
 
     } catch (error) {
         console.log('fetchModifyPlan() COMMUNICATION ERROR!! ', error);

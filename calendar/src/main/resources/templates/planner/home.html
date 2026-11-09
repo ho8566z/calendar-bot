@@ -3,6 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:replace="~{include/title::title}"/>
 
     <link rel="stylesheet" th:href="@{/css/common.css}">
@@ -58,6 +59,22 @@
                 <a class="btn_next" href="#none"> &nbsp;&nbsp; &#62; &nbsp;&nbsp; </a>
             </div>
 
+            <!-- 월별 통계 화면으로 이동(누를 때 지금 보고 있는 년·월을 주소에 붙인다) -->
+            <div class="stats_link">
+                <a class="btn_stats" th:href="@{/planner/stats}">월별 통계 보기</a>
+            </div>
+
+            <!-- 일정 검색: 제목·내용에 검색어가 들어간 내 일정 -->
+            <div class="search_wrap">
+                <input type="text" name="s_keyword" maxlength="50" placeholder="일정 검색 (제목·내용)">
+                <input type="button" value="SEARCH">
+                <input type="button" value="CLEAR">
+            </div>
+            <div id="search_result">
+                <p class="search_msg"></p>
+                <ul class="search_list"></ul>
+            </div>
+
             <!-- 달력 테이블 -->
             <div class="calendar_wrap">
                 <table class="table_calender" id="table_calender">
@@ -76,6 +93,16 @@
 
                     </tbody>
                 </table>
+            </div>
+
+            <!-- 선택한 날짜의 일정 목록: 모바일 폭에서만 보인다(좁은 칸에는 제목 대신 개수만 표시하기 때문) -->
+            <div id="day_list">
+                <div class="day_list_head">
+                    <span id="day_list_title"></span>
+                    <button type="button" id="day_list_add">+ 일정 추가</button>
+                </div>
+                <p id="day_list_empty"></p>
+                <ul id="day_list_items"></ul>
             </div>
 
             <!-- 일정 등록 모달 -->
@@ -112,6 +139,7 @@
                         <form>
                             <input type="text" name="p_title" placeholder="INPUT PLAN TITLE"><br>
                             <input type="text" name="p_body" placeholder="INPUT PLAN BODY"><br>
+                            <input type="time" name="p_time" title="시작 시간(선택)"> 시작 시간(선택)<br>
                             <input type="file" name="p_file" placeholder="SELECT IMAGE FILE"><br><br>
                             <input type="button" value="WRITE">
                             <input type="reset" value="RESET">
@@ -158,6 +186,7 @@
                                 <form>
                                     <input type="text" name="p_title" placeholder="INPUT PLAN TITLE"><br>
                                     <input type="text" name="p_body" placeholder="INPUT PLAN BODY"><br>
+                                    <input type="time" name="p_time" title="시작 시간(선택)"> 시작 시간(선택)<br>
                                     <img class="plan_img"><br>
                                     <input type="file" name="p_file" placeholder="SELECT IMAGE FILE"><br><br>
                                     <input type="button" value="MODIFY">

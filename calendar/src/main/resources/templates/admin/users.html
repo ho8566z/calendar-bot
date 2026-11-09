@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:replace="~{include/title::title}"/>
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/header_nav_footer.css}">
+    <link rel="stylesheet" th:href="@{/css/admin_users.css}">
+
+    <script th:src="@{/js/admin_users.js}" defer></script>
+
+</head>
+<body>
+
+<header th:replace="~{include/header_nav_footer::header}" />
+
+<nav th:replace="~{include/header_nav_footer::nav}"/>
+
+<section>
+    <div id="section_wrap">
+        <div class="word">
+            USER MANAGEMENT
+        </div>
+
+        <div class="content">
+
+            <!-- 아이디 검색 -->
+            <form id="search_form" class="search_wrap" autocomplete="off">
+                <input type="text" name="keyword" maxlength="20" placeholder="아이디로 검색">
+                <input type="submit" value="SEARCH">
+            </form>
+
+            <!-- 처리 결과·오류 안내 -->
+            <p id="message" class="message" role="status"></p>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>NO</th>
+                    <th>ID</th>
+                    <th>ROLE</th>
+                    <th>MAIL</th>
+                    <th>PHONE</th>
+                    <th>REG_DATE</th>
+                    <th>MOD_DATE</th>
+                    <th>ACTION</th>
+                </tr>
+                </thead>
+                <tbody id="user_rows">
+                </tbody>
+            </table>
+
+            <!-- 페이지 이동 -->
+            <div class="pager">
+                <button type="button" id="btn_prev">&#60;</button>
+                <span id="page_info"></span>
+                <button type="button" id="btn_next">&#62;</button>
+            </div>
+
+            <p class="hint">
+                승인하면 사용자는 <b>다시 로그인</b>해야 일정 기능을 쓸 수 있습니다.
+                승인을 취소해도 이미 로그인한 사용자는 로그아웃하기 전까지 기존 권한이 유지됩니다.
+            </p>
+
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{include/header_nav_footer::footer}"/>
+
+<!-- 사용자 한 줄 -->
+<template id="row_template">
+    <tr>
+        <td class="no"></td>
+        <td class="id"></td>
+        <td class="role"></td>
+        <td class="mail"></td>
+        <td class="phone"></td>
+        <td class="reg_date"></td>
+        <td class="mod_date"></td>
+        <td class="action"></td>
+    </tr>
+</template>
+
+</body>
+</html>
