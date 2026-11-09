@@ -92,3 +92,7 @@ CSRF 보호, 계정 정지, 자연어 일정 등록("다음 주 화요일 3시 �
 ## 보안 안내
 
 비밀 값(DB·메일 비밀번호, 봇 토큰)은 환경변수로만 받고 저장소에는 두지 않습니다.
+
+## 이미지 출처
+
+홈 화면 사진: [Hanna Pad, Pexels](https://www.pexels.com/photo/smartphone-on-white-open-planner-8533225/) (Pexels 라이선스, 무료 사용)
