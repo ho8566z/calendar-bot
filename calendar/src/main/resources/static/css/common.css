@@ -1,29 +1,154 @@
+/* ------------------------------------------------------------------
+   공통 디자인: 색·둥근 정도·그림자를 변수로 두고 모든 화면이 같이 쓴다.
+   (새 라이브러리 없이 CSS 와 시스템 글꼴만 사용)
+------------------------------------------------------------------- */
+:root {
+	--ink: #1f2430;
+	--muted: #6b7280;
+	--line: #e6e8ef;
+	--bg: #f5f6fa;
+	--surface: #ffffff;
+	--primary: #4f46e5;
+	--primary-dark: #4338ca;
+	--primary-soft: #eef0ff;
+	--teal: #14b8a6;
+	--danger: #e11d48;
+	--ok: #16a34a;
+	--sun-bg: #fff6f6;
+	--sat-bg: #f2f7ff;
+	--radius: 14px;
+	--radius-sm: 9px;
+	--shadow: 0 1px 2px rgba(31, 36, 48, .05), 0 6px 20px rgba(31, 36, 48, .06);
+	--font: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
 * {
 	margin: 0; padding: 0;
+	box-sizing: border-box;
+	}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	}
+
+body {
+	font-family: var(--font);
+	font-size: 15px;
+	line-height: 1.6;
+	color: var(--ink);
+	background-color: var(--bg);
+	-webkit-font-smoothing: antialiased;
 	}
 
 a {
-	color: #404040;
+	color: var(--primary);
 	text-decoration: none;
+	}
+
+a:hover {
+	color: var(--primary-dark);
 	}
 
 li {
 	list-style: none;
 	}
 
-input {
-	width: 300px;
-	padding: 10px;
-	border-radius: 5px;
-	border: 1px solid #ccc;
-	outline: none;
-	margin: 3px;
+/* 입력 칸 */
+input,
+select,
+textarea {
+	font-family: inherit;
+	font-size: 15px;
+	color: var(--ink);
 	}
 
+input {
+	width: 320px;
+	max-width: 100%;
+	padding: 11px 14px;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--line);
+	background-color: var(--surface);
+	outline: none;
+	margin: 4px;
+	transition: border-color .15s, box-shadow .15s;
+	}
+
+input::placeholder {
+	color: #a0a6b4;
+	}
+
+input:focus,
+select:focus {
+	border-color: var(--primary);
+	box-shadow: 0 0 0 3px var(--primary-soft);
+	}
+
+select {
+	padding: 8px 10px;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--line);
+	background-color: var(--surface);
+	cursor: pointer;
+	outline: none;
+	}
+
+/* 버튼: 눌러서 실행하는 input·button 은 기본이 '주요 버튼', reset 은 '보조 버튼' */
 input[type='button'],
+input[type='submit'] {
+	width: 150px;
+	border: 0;
+	background-color: var(--primary);
+	color: #fff;
+	font-weight: 600;
+	cursor: pointer;
+	}
+
+input[type='button']:hover,
+input[type='submit']:hover {
+	background-color: var(--primary-dark);
+	}
+
 input[type='reset'] {
 	width: 150px;
+	background-color: var(--surface);
+	color: var(--muted);
 	cursor: pointer;
+	}
+
+input[type='reset']:hover {
+	background-color: var(--bg);
+	}
+
+button {
+	font-family: inherit;
+	font-size: 14px;
+	color: var(--ink);
+	padding: 8px 14px;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-sm);
+	background-color: var(--surface);
+	cursor: pointer;
+	transition: background-color .15s, border-color .15s;
+	}
+
+button:hover:not(:disabled) {
+	background-color: var(--primary-soft);
+	border-color: #c7cbff;
+	}
+
+button:disabled {
+	opacity: .5;
+	cursor: default;
+	}
+
+/* 화면 제목(.word): 모든 화면이 같은 모양 */
+#section_wrap .word {
+	text-align: center;
+	font-size: 22px;
+	font-weight: 800;
+	letter-spacing: -.01em;
+	margin: 8px 0 22px;
 	}
 
 /* 모바일(768px 이하): 입력 칸이 화면 밖으로 나가지 않게 하고, 누르기 쉬운 크기로 키운다.
@@ -37,14 +162,19 @@ input[type='reset'] {
 
 	input {
 		width: 100%;
-		max-width: 320px;
-		box-sizing: border-box;
+		max-width: 340px;
 		}
 
 	input[type='button'],
+	input[type='submit'],
 	input[type='reset'] {
 		width: 46%;
-		max-width: 150px;
-		min-height: 44px;
+		max-width: 160px;
+		min-height: 46px;
+		}
+
+	#section_wrap .word {
+		font-size: 20px;
+		margin: 4px 0 16px;
 		}
 }
