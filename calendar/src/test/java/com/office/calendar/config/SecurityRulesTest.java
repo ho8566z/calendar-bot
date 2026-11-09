@@ -60,6 +60,13 @@ class SecurityRulesTest {
     }
 
     @Test
+    @DisplayName("로그인하지 않아도 로그인 결과 화면(/member/signin_result)을 볼 수 있다(실패·잠금 안내)")
+    void signinResult_anonymous() throws Exception {
+        mockMvc.perform(get("/member/signin_result").param("locked", "true"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @DisplayName("관리자(ADMIN)는 /admin/** 를 통과한다")
     void admin_admin() throws Exception {
         mockMvc.perform(get("/admin/users").with(user("boss").roles("ADMIN")))
