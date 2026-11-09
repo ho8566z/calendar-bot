@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
@@ -84,6 +85,14 @@ class ThymeleafRenderingTest {
         @GetMapping("/member/signin")
         String signin() {
             return "member/signin_form";
+        }
+
+        @GetMapping("/member/signin_result")
+        String signinResult(@RequestParam(value = "locked", required = false) boolean locked, Model model) {
+            model.addAttribute("loginedID", null);
+            model.addAttribute("locked", locked);
+            model.addAttribute("lockMinutes", 10);
+            return "member/signin_result";
         }
 
         @GetMapping("/member/signup")
@@ -168,6 +177,16 @@ class ThymeleafRenderingTest {
         assertThat(body).contains("href=\"/member/signup\"").contains("href=\"/member/signin\"");
         assertThat(body).doesNotContain("href=\"/member/modify\"").doesNotContain("href=\"/member/signout_confirm\"");
         assertThat(body).doesNotContain("&nbsp;");
+    }
+
+    @Test
+    @DisplayName("로그인 결과 화면: 잠겼을 때만 잠금 안내 문구를 보여 준다")
+    void signinResultLockedMessage() throws Exception {
+        String locked = withoutComments(render("/member/signin_result?locked=true"));
+        assertThat(locked).contains("id=\"login_locked\"").contains("로그인 시도가 너무 많습니다. 10분 후 다시 시도해 주세요");
+
+        String plain = withoutComments(render("/member/signin_result"));
+        assertThat(plain).contains("SIGN-IN FAIL").doesNotContain("login_locked").doesNotContain("너무 많습니다");
     }
 
     @Test
