@@ -1,17 +1,12 @@
 section {
 	width: 100%;
-	padding: 30px 0;
+	padding: 28px 0 10px;
 }
 
 #section_wrap {
-	width: 1400px;
+	max-width: 1200px;
 	margin: 0 auto;
-}
-
-#section_wrap .word {
-	text-align: center;
-	font-weight: bolder;
-	margin: 20px 0;
+	padding: 0 20px;
 }
 
 #section_wrap .content {
@@ -19,216 +14,357 @@ section {
 	text-align: center;
 }
 
-/* YEAR MONTH SELECT START */
+/* YEAR MONTH SELECT START: 년·월을 고르는 알약 모양 막대 */
 #section_wrap .select_wrap {
-	width: 500px;
-	margin: 20px auto;
-	padding: 10px 30px;
-	text-align: center;
-	border: 1px solid #ccc;
-	border-radius: 60px;
-	text-align: center;
-
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	width: fit-content;
+	margin: 0 auto 14px;
+	padding: 6px 12px;
+	background-color: var(--surface);
+	border: 1px solid var(--line);
+	border-radius: 999px;
+	box-shadow: var(--shadow);
+	font-weight: 600;
 }
 
 #section_wrap .select_wrap select {
-	width: 100px;
-	padding: 5px;
-	text-align: right;
-	margin: 3px;
+	width: 92px;
+	padding: 7px 8px;
+	margin: 0 2px;
 	border: 0;
-	border-bottom: 1px solid #ccc;
+	background-color: transparent;
+	font-size: 17px;
+	font-weight: 700;
+	text-align: right;
+}
 
+#section_wrap .select_wrap select:focus {
+	box-shadow: none;
+	background-color: var(--primary-soft);
+}
+
+/* 이전·다음 버튼: 글자(< >) 대신 동그란 화살표 */
+#section_wrap .select_wrap a {
+	display: inline-block;
+	width: 36px; height: 36px;
+	line-height: 34px;
+	border-radius: 50%;
+	text-align: center;
+	font-size: 0;
+	color: var(--muted);
+}
+
+#section_wrap .select_wrap a:hover {
+	background-color: var(--primary-soft);
+	color: var(--primary);
+}
+
+#section_wrap .select_wrap a.btn_pre::before,
+#section_wrap .select_wrap a.btn_next::before {
+	font-size: 22px;
+	font-weight: 700;
+}
+
+#section_wrap .select_wrap a.btn_pre::before {
+	content: '\2039';
+}
+
+#section_wrap .select_wrap a.btn_next::before {
+	content: '\203A';
 }
 /* YEAR MONTH SELECT END */
 
 /* STATS LINK */
 #section_wrap .stats_link {
-	margin: 0 auto 10px;
+	margin: 0 auto 14px;
 	text-align: center;
 }
 
 #section_wrap .stats_link a.btn_stats {
 	display: inline-block;
-	padding: 4px 14px;
-	border: 1px solid #aaa;
-	border-radius: 4px;
-	color: #333;
+	padding: 6px 16px;
+	border-radius: 999px;
+	background-color: var(--primary-soft);
+	color: var(--primary);
+	font-size: 14px;
+	font-weight: 600;
+}
+
+#section_wrap .stats_link a.btn_stats:hover {
+	background-color: #e0e4ff;
 }
 
 /* SEARCH START */
 #section_wrap .search_wrap {
-	width: 500px;
-	margin: 0 auto 10px;
+	max-width: 520px;
+	margin: 0 auto 14px;
 	text-align: center;
 }
 
 #section_wrap .search_wrap input[type='text'] {
-	width: 300px;
-	padding: 8px;
-	border: 1px solid #ccc;
+	width: min(300px, 100%);
+	padding: 10px 14px;
+	margin: 3px;
 }
 
 #section_wrap .search_wrap input[type='button'] {
-	padding: 8px 12px;
+	width: auto;
+	padding: 10px 16px;
+	margin: 3px;
+}
+
+/* CLEAR 는 보조 버튼 */
+#section_wrap .search_wrap input[type='button']:last-child {
+	background-color: var(--surface);
+	color: var(--muted);
+	border: 1px solid var(--line);
 }
 
 #search_result {
-	width: 700px;
+	max-width: 720px;
 	margin: 0 auto 20px;
 	text-align: left;
 }
 
 #search_result .search_msg {
-	color: #666;
+	color: var(--muted);
 	text-align: center;
 	margin: 5px 0;
+	font-size: 14px;
 }
 
 #search_result .search_msg:empty {
 	display: none;
 }
 
+#search_result ul.search_list {
+	background-color: var(--surface);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	overflow: hidden;
+}
+
+#search_result ul.search_list:empty {
+	display: none;
+}
+
 #search_result ul.search_list li {
-	padding: 6px 4px;
-	border-bottom: 1px dashed #ccc;
+	padding: 10px 16px;
+	border-bottom: 1px solid var(--line);
+}
+
+#search_result ul.search_list li:last-child {
+	border-bottom: 0;
 }
 
 #search_result ul.search_list li .search_date {
 	display: inline-block;
 	min-width: 130px;
-	color: #666;
+	color: var(--muted);
+	font-size: 13px;
 }
 /* SEARCH END */
 
 /* CALENDER START */
-#section_wrap .calender_wrap {
-	width: 1400px;
+#section_wrap .calendar_wrap {
 	margin: 0 auto 30px;
+	background-color: var(--surface);
+	border: 1px solid var(--line);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	overflow: hidden;
 }
 
 #table_calender {
 	width: 100%;
 	border-collapse: collapse;
+	table-layout: fixed;
 }
 
 #table_calender tr th {
-	border: 1px solid #ccc;
-	background-color: #f2f2f2;
-	padding: 5px 0;
+	padding: 12px 0;
+	background-color: #fafbfd;
+	border-bottom: 1px solid var(--line);
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--muted);
 }
 
 #table_calender tr th:first-child {
-	background-color: #fff5f5;
+	color: var(--danger);
 }
 
 #table_calender tr th:last-child {
-	background-color: #e8fdff;
+	color: #2563eb;
 }
 
 #table_calender tr td {
-	border: 1px solid #ccc;
-	text-align: right;
-	height: 150px;
+	position: relative;
+	height: 132px;
+	padding: 8px 8px 6px;
 	vertical-align: top;
-	padding: 3px;
-	width: 210px;
-}
-
-#table_calender tr td:first-child {
-	background-color: #fff5f5;
+	text-align: left;
+	border-right: 1px solid var(--line);
+	border-bottom: 1px solid var(--line);
+	transition: background-color .12s;
 }
 
 #table_calender tr td:last-child {
-	background-color: #e8fdff;
+	border-right: 0;
+}
+
+#table_calender tr:last-child td {
+	border-bottom: 0;
+}
+
+#table_calender tr td:first-child {
+	background-color: var(--sun-bg);
+}
+
+#table_calender tr td:last-child {
+	background-color: var(--sat-bg);
+}
+
+#table_calender tr td:hover {
+	background-color: #f7f8ff;
+}
+
+#table_calender tr td .date {
+	font-size: 14px;
+	font-weight: 700;
+}
+
+#table_calender tr td:first-child .date {
+	color: var(--danger);
+}
+
+#table_calender tr td:last-child .date {
+	color: #2563eb;
+}
+
+/* write 링크: 칸에 마우스를 올렸을 때만 보이는 작은 + 버튼 */
+#table_calender tr td > div:nth-child(2) {
+	position: absolute;
+	top: 6px; right: 6px;
 }
 
 #table_calender tr td a.write {
 	display: inline-block;
-	border-radius: 3px;
-	padding: 0 6px 2px;
-	background-color: #4eccae;
+	width: 24px; height: 24px;
+	padding: 0;
+	line-height: 24px;
+	text-align: center;
+	font-size: 0;
+	border-radius: 50%;
+	background-color: var(--primary);
 	color: #fff;
+	opacity: 0;
+	transition: opacity .12s;
+}
+
+#table_calender tr td a.write::before {
+	content: '+';
+	font-size: 16px;
+	font-weight: 700;
+}
+
+#table_calender tr td:hover a.write,
+#table_calender tr td a.write:focus {
+	opacity: 1;
 }
 
 #table_calender tr td ul.plan {
-	overflow: hidden;
-	padding: 5px;
+	padding-top: 4px;
 }
 
+/* 일정 제목은 작은 알약(칩)으로 */
 #table_calender tr td ul.plan li {
-	border-bottom: 1px dashed #ccc;
-	margin-top: 5px;
+	margin-top: 4px;
+	padding: 3px 8px;
+	border-radius: 6px;
+	background-color: var(--primary-soft);
+	font-size: 12.5px;
+	line-height: 1.4;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#table_calender tr td ul.plan li a {
+	color: #3730a3;
 }
 /* CALENDER END */
 
-/* WRITE PLAN START */
-#write_plan {
-	display: none;
-	position: fixed;
-	top: 0; left: 0;
-	width: 100%; height: 100%;
-	background-color: rgba(0, 0, 0, .7);
-}
-
-#write_plan .write_plan_wrap {
-	width: 700px;
-	margin: 50px auto 0;
-	text-align: center;
-	padding: 10px;
-	background-color: #fff;
-	border: 1px solid #ccc;
-	border-radius: 10px;
-	padding: 50px 0;
-}
-
-#write_plan .write_plan_wrap .year_month_date {
-	margin-bottom: 20px;
-}
-
-#write_plan .write_plan_wrap select {
-	width: 70px;
-	padding: 5px;
-	text-align: right;
-	margin: 3px;
-	border: 1px solid #ccc;
-}
-
-#write_plan .write_plan_wrap input {
-	width: 400px;
-	padding: 10px;
-	margin: 3px;
-}
-
-#write_plan .write_plan_wrap input[type='file'] {
-	width: 402px;
-	border: 1px solid #ccc;
-}
-
-#write_plan .write_plan_wrap input[type='button'],
-#write_plan .write_plan_wrap input[type='reset'] {
-	width: 120px;
-}
-/* WRITE PLAN END */
-
-/* SHOW PLAN START */
+/* 일정 등록·상세 모달 공통: 어두운 배경 위에 둥근 카드 */
+#write_plan,
 #show_plan {
 	display: none;
 	position: fixed;
 	top: 0; left: 0;
 	width: 100%; height: 100%;
-	background-color: rgba(0, 0, 0, .7);
+	overflow-y: auto;
+	background-color: rgba(17, 24, 39, .55);
+	backdrop-filter: blur(3px);
+	z-index: 100;
 }
 
-#show_plan .show_plan_wrap {
-	width: 470px;
-	margin: 20px auto 0;
+/* WRITE PLAN START */
+#write_plan .write_plan_wrap {
+	max-width: 520px;
+	margin: 7vh auto 40px;
+	padding: 34px 28px;
 	text-align: center;
-	padding: 10px;
-	background-color: #fff;
-	border: 1px solid #ccc;
-	border-radius: 10px;
-	padding: 50px 0;
+	background-color: var(--surface);
+	border-radius: 20px;
+	box-shadow: 0 24px 60px rgba(17, 24, 39, .25);
+}
+
+#write_plan .write_plan_wrap .year_month_date {
+	margin-bottom: 18px;
+	font-weight: 600;
+}
+
+#write_plan .write_plan_wrap select {
+	width: 78px;
+	margin: 3px;
+	text-align: right;
+}
+
+#write_plan .write_plan_wrap input {
+	width: 100%;
+	margin: 5px 0;
+	padding: 12px 14px;
+}
+
+#write_plan .write_plan_wrap input[type='time'] {
+	width: auto;
+	margin-right: 6px;
+}
+
+#write_plan .write_plan_wrap input[type='file'] {
+	border: 1px dashed #c7cbff;
+	background-color: var(--primary-soft);
+}
+
+#write_plan .write_plan_wrap input[type='button'],
+#write_plan .write_plan_wrap input[type='reset'] {
+	width: calc(33.3% - 8px);
+	margin: 6px 4px 0;
+}
+/* WRITE PLAN END */
+
+/* SHOW PLAN START */
+#show_plan .show_plan_wrap {
+	max-width: 520px;
+	margin: 5vh auto 40px;
+	padding: 34px 28px;
+	text-align: center;
+	background-color: var(--surface);
+	border-radius: 20px;
+	box-shadow: 0 24px 60px rgba(17, 24, 39, .25);
 }
 
 #show_plan .show_plan_wrap ul {
@@ -240,114 +376,61 @@ section {
 }
 
 #show_plan .show_plan_wrap ul li.detail {
-	width: 450px;
-	padding: 0 10px;
-}
-
-#show_plan .show_plan_wrap ul li.share_comment {
-	width: 285px;
-	padding: 0 10px;
-	text-align: left
-}
-
-#show_plan div.share_title {
-	border-bottom: 1px solid #ccc;
-	margin-bottom: 5px;
-	text-align: center;
-}
-
-#show_plan div.share_input input[name='search_friend'] {
-	width: 255px;
-}
-
-#show_plan div.share_list {
-	width: 262px;
-	position: relative;
-	top: -3px;
-	left: 3px;
-	border-radius: 2px;
-	border: 1px solid #ccc;
-	padding: 2px 7px;
-	display: none;
-}
-
-#show_plan div.share_list ul {
 	width: 100%;
-}
-
-#show_plan div.share_list ul li {
-	width: 100%;
-	clear: both;
-	padding: 3px 0;
-}
-
-#show_plan div.share_list ul li:hover {
-	background-color: #f2f2f2;
-}
-
-#show_plan div.comment_title {
-	border-bottom: 1px solid #ccc;
-	margin-top: 30px;
-	margin-bottom: 5px;
-	text-align: center;
-}
-
-#show_plan div.comment_input input[name='comment'] {
-	width: 210px;
-}
-
-#show_plan div.comment_list {
-	width: 275px; height: 310px;
-	position: relative;
-	top: 3px;
-	left: 3px;
-	padding: 2px 0;
-	border: 1px solid #ccc;
-	border-radius: 3px;
-	overflow: auto;
-}
-
-#show_plan div.comment_list ul {
-	width: 100%;
-}
-
-#show_plan div.comment_list ul li {
-	width: 250px;
-	clear: both;
-	padding: 5px;
-	border-bottom: 1px solid #e3e3e3;
-	border-radius: 2px;
 }
 
 #show_plan .show_plan_wrap .year_month_date {
-	margin-bottom: 20px;
+	margin-bottom: 18px;
+	font-weight: 600;
 }
 
 #show_plan .show_plan_wrap select {
-	width: 70px;
-	padding: 5px;
-	text-align: right;
+	width: 78px;
 	margin: 3px;
-	border: 1px solid #ccc;
+	text-align: right;
 }
 
 #show_plan .show_plan_wrap input {
-	width: 400px;
-	padding: 10px;
-	margin: 3px;
+	width: 100%;
+	margin: 5px 0;
+	padding: 12px 14px;
+}
+
+#show_plan .show_plan_wrap input[type='time'] {
+	width: auto;
+	margin-right: 6px;
 }
 
 #show_plan .show_plan_wrap img.plan_img {
-	max-width: 424px;
+	max-width: 100%;
+	border-radius: var(--radius-sm);
+	margin: 6px 0;
 }
 
 #show_plan .show_plan_wrap input[type='file'] {
-	width: 402px;
-	border: 1px solid #ccc;
+	border: 1px dashed #c7cbff;
+	background-color: var(--primary-soft);
 }
 
 #show_plan .show_plan_wrap input[type='button'] {
-	width: 120px;
+	width: calc(33.3% - 8px);
+	margin: 6px 4px 0;
+}
+
+/* DELETE 는 위험한 동작이라 붉은 색으로 구분 */
+#show_plan .show_plan_wrap input[type='button'][value='DELETE'] {
+	background-color: #fff1f3;
+	color: var(--danger);
+}
+
+#show_plan .show_plan_wrap input[type='button'][value='DELETE']:hover {
+	background-color: #ffe0e6;
+}
+
+#show_plan .show_plan_wrap input[type='button'][value='CLOSE'] {
+	background-color: var(--surface);
+	color: var(--muted);
+	border: 1px solid var(--line);
 }
 /* SHOW PLAN END */
 
@@ -361,16 +444,14 @@ section {
 @media (max-width: 768px) {
 	#section_wrap {
 		width: auto;
-		padding: 0 8px;
+		padding: 0 12px;
 	}
 
 	/* 년·월 선택: 화면 폭에 맞추고 이전/다음 버튼은 누르기 쉽게 */
 	#section_wrap .select_wrap {
-		width: auto;
-		max-width: 500px;
-		padding: 6px 10px;
-		margin: 12px auto;
-		border-radius: 30px;
+		max-width: 100%;
+		padding: 4px 8px;
+		margin: 6px auto 12px;
 		/* 이전/다음 버튼과 선택 상자 두 개가 줄바꿈 없이 한 줄에 들어오게 한다 */
 		display: flex;
 		align-items: center;
@@ -382,56 +463,59 @@ section {
 		width: 72px;
 		margin: 2px;
 		flex: 0 0 auto;
+		font-size: 16px;
 	}
 
 	#section_wrap .select_wrap a {
-		display: inline-block;
 		flex: 0 0 auto;
-		min-width: 44px;
-		line-height: 44px;
-		text-align: center;
+		width: 44px; height: 44px;
+		line-height: 42px;
 		white-space: nowrap;
 	}
 
 	/* 달력: 칸을 좁히고 일정 제목 대신 개수만 보여 준다 */
+	#section_wrap .calendar_wrap {
+		border-radius: var(--radius-sm);
+	}
+
 	#table_calender {
 		table-layout: fixed;
 	}
 
 	#table_calender tr th {
-		padding: 4px 0;
+		padding: 8px 0;
 		font-size: 12px;
 		overflow: hidden;
 	}
 
 	#table_calender tr td {
 		width: auto;
-		height: 64px;
-		padding: 2px;
+		height: 62px;
+		padding: 5px 2px;
 		font-size: 13px;
 		text-align: center;
 		cursor: pointer;
 	}
 
+	#table_calender tr td .date {
+		font-size: 13px;
+	}
+
 	#table_calender tr td.selected {
-		outline: 2px solid #4eccae;
+		outline: 2px solid var(--primary);
 		outline-offset: -2px;
-		background-color: #f1fbf8;
+		background-color: var(--primary-soft);
 	}
 
-	/* write 링크는 작은 + 버튼으로 */
+	/* write 링크는 모바일에서 항상 보이는 작은 + 버튼(날짜 아래에 둔다) */
+	#table_calender tr td > div:nth-child(2) {
+		position: static;
+	}
+
 	#table_calender tr td a.write {
-		display: inline-block;
+		opacity: 1;
 		width: 26px; height: 26px;
-		padding: 0;
 		line-height: 26px;
-		text-align: center;
-		font-size: 0;
-	}
-
-	#table_calender tr td a.write::before {
-		content: '+';
-		font-size: 16px;
 	}
 
 	/* 일정 제목 목록은 숨기고, 일정이 있는 날은 ● 개수 */
@@ -443,16 +527,19 @@ section {
 		content: '● ' attr(data-count);
 		display: block;
 		font-size: 11px;
-		color: #2a9d84;
+		font-weight: 700;
+		color: var(--primary);
 	}
 
 	/* 선택한 날짜의 일정 목록 */
 	#day_list {
 		display: block;
 		margin: 12px 0;
-		padding: 10px;
-		border: 1px solid #ccc;
-		border-radius: 8px;
+		padding: 14px;
+		background-color: var(--surface);
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
 		text-align: left;
 	}
 
@@ -460,15 +547,17 @@ section {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		font-weight: bold;
+		font-weight: 700;
 	}
 
 	#day_list_add {
-		min-height: 36px;
-		padding: 0 12px;
-		border: 1px solid #aaa;
-		border-radius: 5px;
-		background-color: #fff;
+		min-height: 38px;
+		padding: 0 14px;
+		border: 0;
+		border-radius: 999px;
+		background-color: var(--primary);
+		color: #fff;
+		font-weight: 600;
 		cursor: pointer;
 	}
 
@@ -478,7 +567,7 @@ section {
 
 	#day_list_empty {
 		margin: 8px 0;
-		color: #666;
+		color: var(--muted);
 		font-size: 14px;
 	}
 
@@ -487,7 +576,7 @@ section {
 	}
 
 	#day_list_items li {
-		border-top: 1px dashed #ccc;
+		border-top: 1px solid var(--line);
 	}
 
 	#day_list_items li a.title {
@@ -507,17 +596,20 @@ section {
 	#write_plan,
 	#show_plan {
 		overflow-y: auto;
-		background-color: #fff;
+		background-color: var(--surface);
+		backdrop-filter: none;
 	}
 
 	#write_plan .write_plan_wrap,
 	#show_plan .show_plan_wrap {
 		width: auto;
+		max-width: none;
 		min-height: 100%;
 		margin: 0;
-		padding: 20px 12px;
+		padding: 22px 16px;
 		border: 0;
 		border-radius: 0;
+		box-shadow: none;
 		box-sizing: border-box;
 	}
 
@@ -527,8 +619,13 @@ section {
 	#write_plan .write_plan_wrap input[type='file'],
 	#show_plan .show_plan_wrap input[type='file'] {
 		width: 100%;
-		max-width: 360px;
+		max-width: 400px;
 		box-sizing: border-box;
+	}
+
+	#write_plan .write_plan_wrap input[type='time'],
+	#show_plan .show_plan_wrap input[type='time'] {
+		width: auto;
 	}
 
 	#write_plan .write_plan_wrap input[type='button'],
@@ -536,7 +633,7 @@ section {
 	#show_plan .show_plan_wrap input[type='button'] {
 		width: 30%;
 		max-width: 120px;
-		min-height: 44px;
+		min-height: 46px;
 	}
 
 	#show_plan .show_plan_wrap ul {
@@ -557,13 +654,18 @@ section {
 	/* 검색 */
 	#section_wrap .search_wrap {
 		width: auto;
-		max-width: 500px;
+		max-width: 520px;
 	}
 
 	#section_wrap .search_wrap input[type='text'] {
 		width: 100%;
-		max-width: 360px;
+		max-width: 400px;
 		box-sizing: border-box;
+	}
+
+	#section_wrap .search_wrap input[type='button'] {
+		width: 40%;
+		max-width: 140px;
 	}
 
 	#search_result {
