@@ -268,7 +268,7 @@ public class MemberService {
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(toMailAddr);
-        simpleMailMessage.setSubject("[MyCalendar] 새 비밀번호 안내입니다.");
+        simpleMailMessage.setSubject("[CALENDAR BOT] 새 비밀번호 안내입니다.");
         simpleMailMessage.setText("새 비밀번호: " + newPassword);
         simpleMailMessage.setFrom(mailFrom);
 
