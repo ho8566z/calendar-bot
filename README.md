@@ -1,7 +1,23 @@
 # CALENDAR BOT
 
-일정을 기록하고, 다음 주를 미리 받아보는 개인 일정 관리 웹 서비스입니다.
-등록해 둔 일정을 **매주 일요일 21:00에 텔레그램으로** 보내 주고, 휴대폰 화면에서도 쓸 수 있습니다. (개인 프로젝트, 2026.11)
+<p align="center"><img src="https://raw.githubusercontent.com/ho8566z/calendar-bot_word/main/ppt/calendar_bot_new/%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C1.PNG" alt="CALENDAR BOT 표지" width="100%"></p>
+
+일정을 기록하고, 다음 주를 미리 받아보는 개인 일정 관리 웹 서비스입니다. (1차 개인 프로젝트, 2026.11)
+
+명세서와 발표 자료는 문서 저장소 [calendar-bot_word](https://github.com/ho8566z/calendar-bot_word)에 있습니다.
+
+## 프로젝트 요약
+
+- **해결하려는 문제**: 일정을 등록해 두고도 다시 열어 보지 않으면 놓친다.
+- **핵심 기능**: 매주 일요일 21:00에 다음 주 일정을 텔레그램으로 전송, 휴대폰 화면 대응
+- **기술 스택**: Java 17, Spring Boot, Spring Security, JPA(쓰기)·MyBatis(동적 조회), MySQL, Thymeleaf
+- **목적**: 취업용 포트폴리오. 단순 CRUD에서 멈추지 않고 기획·보안·완성도로 차별화
+
+## 화면
+
+| 홈 | 달력 | 통계 |
+| --- | --- | --- |
+| <img src="https://raw.githubusercontent.com/ho8566z/calendar-bot_word/main/ppt/%EC%BA%A1%EC%B2%98/01_%ED%99%88.png" width="100%"> | <img src="https://raw.githubusercontent.com/ho8566z/calendar-bot_word/main/ppt/%EC%BA%A1%EC%B2%98/02_%EB%8B%AC%EB%A0%A5.jpg" width="100%"> | <img src="https://raw.githubusercontent.com/ho8566z/calendar-bot_word/main/ppt/%EC%BA%A1%EC%B2%98/03_%ED%86%B5%EA%B3%84.jpg" width="100%"> |
 
 ## 주요 기능
 
@@ -20,6 +36,13 @@
 | 화면 | Thymeleaf, HTML/CSS, 순수 JavaScript(fetch) |
 | 연동 | Telegram Bot API(롱 폴링으로 연동, 일정 발송), Gmail SMTP(비밀번호 찾기) |
 | 테스트 | JUnit 5, MockMvc, AssertJ |
+
+## 문서
+
+설계와 결정 내용은 [calendar-bot_word](https://github.com/ho8566z/calendar-bot_word)에서 볼 수 있습니다.
+
+- 명세서 모음(엑셀): 프로젝트 개요, 요구·기능·API·화면·테이블 명세서, WBS, 트러블슈팅, 결정 기록
+- 발표 자료: 23장 PPT와 PDF
 
 ## 실행 방법
 
