@@ -1,17 +1,17 @@
 package com.office.calendar.config;
 
 import com.office.calendar.member.MemberSigninInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    @Autowired
-    MemberSigninInterceptor memberSigninInterceptor;
+    private final MemberSigninInterceptor memberSigninInterceptor;
 
     // 업로드 이미지(c:/calendar/upload/{id}/{file}) -> /planUploadImg/{id}/{file}
     @Override
