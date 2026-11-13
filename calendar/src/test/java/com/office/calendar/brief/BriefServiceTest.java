@@ -60,7 +60,7 @@ class BriefServiceTest {
     }
 
     private void plansFor(BriefTarget t, BriefPlanRow... rows) {
-        when(mapper.selectPlans(t.getMemberId(), 20261109, 20261115)).thenReturn(List.of(rows));
+        when(mapper.selectPlans(t.memberId(), 20261109, 20261115)).thenReturn(List.of(rows));
     }
 
     private List<BriefLogEntity> savedLogs() {

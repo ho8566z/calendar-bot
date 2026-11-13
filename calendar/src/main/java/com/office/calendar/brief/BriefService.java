@@ -62,14 +62,14 @@ public class BriefService {
         String error = null;
 
         try {
-            List<BriefPlanRow> plans = briefMapper.selectPlans(target.getMemberId(), dateKey(weekStart), dateKey(BriefWeek.weekEnd(weekStart)));
+            List<BriefPlanRow> plans = briefMapper.selectPlans(target.memberId(), dateKey(weekStart), dateKey(BriefWeek.weekEnd(weekStart)));
             List<String> parts = BriefMessageBuilder.build(weekStart, plans);
 
             if (parts.isEmpty()) {
                 result = BriefResult.SKIP;
 
             } else {
-                briefSender.send(target.getChatId(), parts);
+                briefSender.send(target.chatId(), parts);
                 result = BriefResult.SUCCESS;
             }
 
@@ -92,7 +92,7 @@ public class BriefService {
     private void record(BriefTarget target, LocalDate weekStart, BriefResult result, String error) {
         try {
             briefLogRepository.save(BriefLogEntity.builder()
-                    .memberNo(target.getMemberNo())
+                    .memberNo(target.memberNo())
                     .weekStart(weekStart)
                     .sentAt(result == BriefResult.SUCCESS ? LocalDateTime.now(clock) : null)
                     .result(result)
