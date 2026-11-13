@@ -58,7 +58,10 @@ paths:
 - 남기지 않는 것: 비밀번호·토큰·API 키·세션 ID, 개인 정보, 요청·응답 본문 전체.
 
 ## 7. 이 프로젝트(calendar-bot)의 예외
-- 엔티티·DTO·Row 클래스의 `@Data`·`@AllArgsConstructor`와 엔티티 setter는 기존 코드(MyBatis·JdbcTemplate 매핑)가 의존하므로 **새 코드에는 쓰지 않되, 기존 코드는 기능 변경이 있을 때 점진적으로 고친다.** 일괄 교체하지 않는다.
-- 새 DTO는 `record`로 만든다. 기존 `AdminUserDto`·`MemberDto`·`AuthorityDto`·`PlannerDto`는 위 방식으로 점진 전환한다.
+- 읽기 전용 결과 클래스(`BriefPlanRow`, `BriefTarget`, `PlannerStatRow`, `AdminUserDto`, `AuthorityDto`)는 `record`로 전환했다. 새 DTO도 `record`로 만든다.
+- 폼 바인딩·`BeanPropertyRowMapper`가 setter를 쓰는 `MemberDto`, `PlannerDto`와 엔티티(`@Data`, setter)는 기존 코드가 의존하므로 새 코드에는 쓰지 않되 기존은 그대로 둔다. 엔티티 setter 제거는 하지 않기로 했다(2026-11-13 사용자 결정).
+- 컨트롤러 이름은 `XController` 하나로 쓴다(페이지·JSON을 한 클래스가 함께 다루는 곳이 있어 `PageController`/`ApiController`로 나누지 않는다).
+- DAO(`MemberDao`)는 기존 방식으로 유지하고, 새 영속 코드는 `jpa/` 또는 `mapper/`에 둔다.
 - 생성자가 둘 이상이라 `@Autowired`가 필요한 생성자(`TelegramBriefSender`)는 유지한다. 필드 주입은 금지.
 - 로그: 디버그 출력은 `System.out`이 아니라 `log.debug`, 예외는 `log.error("…", e)`.
+- JS(`planner.js`)의 `console.log`는 기존 코드라 남아 있다.
