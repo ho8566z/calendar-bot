@@ -21,8 +21,6 @@ import java.util.Optional;
 //@RequiredArgsConstructor
 public class MemberService {
 
-    final private String CLASS_NAME = "[MemberService] ";
-
     final public static int USER_ID_ALREADY_EXIST   = 0;
     final public static int USER_SIGNUP_SUCCESS     = 1;
     final public static int USER_SIGNUP_FAIL        = -1;
@@ -58,7 +56,7 @@ public class MemberService {
 
 
     public int signupConfirm(MemberDto memberDto) {
-        System.out.println(CLASS_NAME.concat("signupConfirm()"));
+        log.debug("signupConfirm()");
 
 //        boolean isMember = memberDao.isMember(memberDto.getId());
 //        boolean isMember = memberMapper.isMember(memberDto.getId());
@@ -99,17 +97,17 @@ public class MemberService {
     }
 
     public String signinConfirm(MemberDto memberDto) {
-        System.out.println(CLASS_NAME.concat("signinConfirm()"));
+        log.debug("signinConfirm()");
 
 //        MemberDto dto = memberDao.selectMemberByID(memberDto.getId());
         /*
         MemberDto dto = memberMapper.selectMemberByID(memberDto.getId());
         if (dto != null && passwordEncoder.matches(memberDto.getPw(), dto.getPw())) {
-            System.out.println(CLASS_NAME.concat("MEMBER LOGIN SUCCESS!!"));
+            log.info("MEMBER LOGIN SUCCESS!!");
             return dto.getId();
 
         } else {
-            System.out.println(CLASS_NAME.concat("MEMBER LOGIN FAIL!!"));
+            log.info("MEMBER LOGIN FAIL!!");
             return null;
 
         }
@@ -131,7 +129,7 @@ public class MemberService {
     }
 
     public MemberDto modify(String loginedID) {
-        System.out.println(CLASS_NAME.concat("modify()"));
+        log.debug("modify()");
 
 //        return memberDao.selectMemberByID(loginedID);
 //        return memberMapper.selectMemberByID(loginedID);
@@ -163,7 +161,7 @@ public class MemberService {
 
     @Transactional
     public int modifyConfirm(MemberDto memberDto, String loginedID) {
-        System.out.println(CLASS_NAME.concat("modifyConfirm()"));
+        log.debug("modifyConfirm()");
 
         String encodedPW = passwordEncoder.encode(memberDto.getPw());
         memberDto.setPw(encodedPW);
@@ -190,7 +188,7 @@ public class MemberService {
     }
 
     public int findpasswordConfirm(MemberDto memberDto) {
-        System.out.println(CLASS_NAME.concat("findpasswordConfirm()"));
+        log.debug("findpasswordConfirm()");
 
         // 1. 인증
 //        MemberDto selectedMemberDto = memberDao.selectMemberByIDAndMail(memberDto);
@@ -235,7 +233,7 @@ public class MemberService {
     }
 
     private String createNewPassword() {
-        System.out.println("[MemberService] createNewPassword()");
+        log.debug("createNewPassword()");
 
         char[] chars = new char[] {
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -264,7 +262,7 @@ public class MemberService {
     }
 
     private void sendNewPasswordByMail(String toMailAddr, String newPassword) {
-        System.out.println("[MemberService] sendNewPasswordByMail()");
+        log.debug("sendNewPasswordByMail()");
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(toMailAddr);
