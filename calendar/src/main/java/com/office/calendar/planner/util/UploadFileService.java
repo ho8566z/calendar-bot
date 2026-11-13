@@ -65,7 +65,7 @@ public class UploadFileService {
             result = true;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("upload 실패", e);
 
         }
 

@@ -1,6 +1,7 @@
 package com.office.calendar.member;
 
 import org.jspecify.annotations.Nullable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,9 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@Slf4j
 public class MemberDao {
-
-    final private String CLASS_NAME = "[MemberDao] ";
 
     final private JdbcTemplate jdbcTemplate;
 
@@ -22,7 +22,7 @@ public class MemberDao {
     }
 
     public boolean isMember(String id) {
-        System.out.println(CLASS_NAME.concat("isMember()"));
+        log.debug("isMember()");
 
         String sql = "SELECT COUNT(*) FROM USER_MEMBER WHERE ID = ?";
 
@@ -35,7 +35,7 @@ public class MemberDao {
     }
 
     public int insertMember(MemberDto memberDto) {
-        System.out.println(CLASS_NAME.concat("insertMember()"));
+        log.debug("insertMember()");
 
         String sql = "INSERT INTO USER_MEMBER(ID, PW, MAIL, PHONE) " +
                 "VALUES(?, ?, ?, ?)";
@@ -48,7 +48,7 @@ public class MemberDao {
                     memberDto.getMail(),
                     memberDto.getPhone());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("insertMember 실패", e);
 
         }
 
@@ -57,7 +57,7 @@ public class MemberDao {
     }
 
     public MemberDto selectMemberByID(String id) {
-        System.out.println(CLASS_NAME.concat("isMember()"));
+        log.debug("selectMemberByID()");
 
         String sql = "SELECT * FROM USER_MEMBER WHERE ID = ?";
 
@@ -68,10 +68,10 @@ public class MemberDao {
             memberDtos = jdbcTemplate.query(sql, rowMapper, id);
 
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            log.error("selectMemberByID 실패", e);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("selectMemberByID 실패", e);
 
         }
 
@@ -80,7 +80,7 @@ public class MemberDao {
     }
 
     public int updateMember(MemberDto memberDto) {
-        System.out.println(CLASS_NAME.concat("updateMember()"));
+        log.debug("updateMember()");
 
         String sql =    "UPDATE " +
                 "USER_MEMBER " +
@@ -100,7 +100,7 @@ public class MemberDao {
                     memberDto.getNo());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("updateMember 실패", e);
 
         }
 
@@ -109,7 +109,7 @@ public class MemberDao {
     }
 
     public MemberDto selectMemberByIDAndMail(MemberDto memberDto) {
-        System.out.println(CLASS_NAME.concat("selectMemberByIDAndMail()"));
+        log.debug("selectMemberByIDAndMail()");
 
         String sql = "SELECT " +
                 "* " +
@@ -124,7 +124,7 @@ public class MemberDao {
             memberDtos = jdbcTemplate.query(sql, rowMapper, memberDto.getId(), memberDto.getMail());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("selectMemberByIDAndMail 실패", e);
 
         }
 
@@ -133,7 +133,7 @@ public class MemberDao {
     }
 
     public int updatePassword(String id, String encodedNewPw) {
-        System.out.println(CLASS_NAME.concat("updatePassword()"));
+        log.debug("updatePassword()");
 
         String sql = "UPDATE USER_MEMBER SET PW = ? WHERE ID = ?";
 
@@ -142,7 +142,7 @@ public class MemberDao {
             result = jdbcTemplate.update(sql, encodedNewPw, id);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("updatePassword 실패", e);
 
         }
 
