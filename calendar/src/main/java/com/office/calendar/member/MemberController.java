@@ -18,8 +18,6 @@ import java.security.Principal;
 @RequestMapping("/member")
 public class MemberController {
 
-    final private String CLASS_NAME = "[MemberController] ";
-
     final private MemberService memberService;
 
     // 로그인 잠금 안내 문구에 보여 줄 잠금 시간(분)
@@ -34,7 +32,7 @@ public class MemberController {
     // 회원가입 양식
     @GetMapping("/signup")
     public String signup() {
-        System.out.println(CLASS_NAME.concat("signup()"));
+        log.debug("signup()");
 
         String nextPage = "member/signup_form";
 
@@ -45,7 +43,7 @@ public class MemberController {
     // 회원가입 확인
     @PostMapping("/signup_confirm")
     public String signupConfirm(MemberDto memberDto, Model model) {
-        System.out.println(CLASS_NAME.concat("signupConfirm()"));
+        log.debug("signupConfirm()");
 
         String nextPage = "member/signup_result";
 
@@ -59,7 +57,7 @@ public class MemberController {
     // 로그인 양식 /signin
     @GetMapping("/signin")
     public String signin() {
-        System.out.println(CLASS_NAME.concat("signin()"));
+        log.debug("signin()");
 
         String nextPage = "member/signin_form";
 
@@ -73,7 +71,7 @@ public class MemberController {
     public String signinConfirm(MemberDto memberDto,
                                 Model model,
                                 HttpSession session) {
-        System.out.println(CLASS_NAME.concat("signinConfirm()"));
+        log.debug("signinConfirm()");
 
         String nextPage = "member/signin_result";
 
@@ -93,7 +91,7 @@ public class MemberController {
     // 로그 아웃 /signout_confirm
     @GetMapping("/signout_confirm")
     public String signoutConfirm(HttpSession session) {
-        System.out.println(CLASS_NAME.concat("signoutConfirm()"));
+        log.debug("signoutConfirm()");
 
         String nextPage = "redirect:/";
 
@@ -106,7 +104,7 @@ public class MemberController {
     // 계정 수정 양식(/member/modify)
     @GetMapping("/modify")
     public String modify(Principal principal, Model model) {
-        System.out.println(CLASS_NAME.concat("modify()"));
+        log.debug("modify()");
 
         String nextPage = "member/modify_form";
 
@@ -121,7 +119,7 @@ public class MemberController {
     // 계정 수정 확인(/member/modify_confirm)
     @PostMapping("/modify_confirm")
     public String modifyConfirm(MemberDto memberDto, Principal principal, Model model) {
-        System.out.println(CLASS_NAME.concat("modifyConfirm()"));
+        log.debug("modifyConfirm()");
 
         String nextPage = "member/modify_result";
 
@@ -136,7 +134,7 @@ public class MemberController {
     // 비밀번호 찾기 양식(/member/findpassword)
     @GetMapping("/findpassword")
     public String findpassword(MemberDto memberDto, Model model) {
-        System.out.println(CLASS_NAME.concat("findpassword()"));
+        log.debug("findpassword()");
 
         String nextPage = "member/findpassword_form";
 
@@ -147,7 +145,7 @@ public class MemberController {
     // 비밀번호 찾기 확인(/member/findpassword_confirm)
     @PostMapping("/findpassword_confirm")
     public String findpasswordConfirm(MemberDto memberDto, Model model) {
-        System.out.println(CLASS_NAME.concat("findpasswordConfirm()"));
+        log.debug("findpasswordConfirm()");
 
         String nextPage = "member/findpassword_result";
 
@@ -164,7 +162,7 @@ public class MemberController {
             @RequestParam(value = "loginedID", required = false) String loginedID,
             @RequestParam(value = "locked", required = false) String locked,
             Model model) {
-        log.info(CLASS_NAME.concat("signinResult()"));
+        log.debug("signinResult()");
 
         String nextPage = "member/signin_result";
         model.addAttribute("loginedID", loginedID);

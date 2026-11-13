@@ -27,7 +27,7 @@ public final class BriefMessageBuilder {
         for (BriefPlanRow plan : plans) {
             LocalDate date = toDate(plan);
             if (date != null && !date.isBefore(weekStart) && !date.isAfter(weekEnd)) {
-                entries.add(new Entry(date, plan.getStartTime(), cleanTitle(plan.getTitle())));
+                entries.add(new Entry(date, plan.startTime(), cleanTitle(plan.title())));
             }
         }
         if (entries.isEmpty()) {
@@ -63,7 +63,7 @@ public final class BriefMessageBuilder {
 
     private static LocalDate toDate(BriefPlanRow plan) {
         try {
-            return LocalDate.of(plan.getYear(), plan.getMonth(), plan.getDate());
+            return LocalDate.of(plan.year(), plan.month(), plan.date());
         } catch (DateTimeException e) {
             return null;        // 달력에 없는 날짜
         }

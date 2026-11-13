@@ -135,15 +135,15 @@ public class PlannerService {
 
         int[] byWeekday = new int[7];
         for (PlannerStatRow row : plannerMapper.countByWeekday(ownerId, year, month)) {
-            if (row.getBucket() >= 1 && row.getBucket() <= 7) {
-                byWeekday[row.getBucket() - 1] = row.getCnt();
+            if (row.bucket() >= 1 && row.bucket() <= 7) {
+                byWeekday[row.bucket() - 1] = row.cnt();
             }
         }
 
         int[] byWeek = new int[weekCount];
         for (PlannerStatRow row : plannerMapper.countByWeek(ownerId, year, month)) {
-            if (row.getBucket() >= 1 && row.getBucket() <= weekCount) {
-                byWeek[row.getBucket() - 1] = row.getCnt();
+            if (row.bucket() >= 1 && row.bucket() <= weekCount) {
+                byWeek[row.bucket() - 1] = row.cnt();
             }
         }
 
